@@ -188,6 +188,7 @@ export default class Contacts extends LightningElement {
     }
 
     handleRowOpen(event) {
+        event.preventDefault();
         const id = event.currentTarget.dataset.id;
         if (id) {
             navigate(`/contacts/${id}`);
