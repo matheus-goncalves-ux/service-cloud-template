@@ -1,0 +1,161 @@
+/* page-pipeline — standard Sales Cloud Opportunities list view.
+   Renders the object-home page header plus either a standard lightning-datatable
+   (default/priority view) or a Kanban board grouped by Stage. Helper classes are
+   defined locally because component CSS is scoped per LWC under synthetic shadow
+   DOM. */
+
+:host {
+    display: block;
+}
+
+/* --- Opportunity Kanban board -------------------------------------------
+   Mirrors the standard Salesforce Opportunity Kanban: a continuous blue
+   chevron header bar (Path-style) across the stages, thin grey column
+   dividers, a large light teal column total, and white deal cards. */
+
+.c-board {
+    padding-block: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-board__cols {
+    flex-wrap: nowrap;
+    align-items: stretch;
+}
+
+/* Each stage column flexes to fill the width, within sensible bounds */
+.c-board__col {
+    flex: 1 1 0;
+    /* Standard Kanban column bounds; no SLDS hook maps to these widths */
+    min-inline-size: 11.75rem;
+    max-inline-size: 18.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Continuous blue chevron header (Path-style). Adjacent headers touch; a
+   clipped rotated square draws the white ">" notch between segments. */
+.c-board__head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    block-size: 2.25rem;
+    padding-inline: var(--slds-g-spacing-4, 1rem);
+    overflow: hidden;
+    background: var(--slds-g-color-accent-1, #066afe);
+    color: var(--slds-g-color-on-accent-1, #ffffff);
+    font-size: var(--slds-g-font-scale-1, 0.8125rem);
+}
+
+/* White chevron arrow at the left edge of every segment except the first */
+.c-board__head::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: -0.9rem;
+    inset-block-start: 50%;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    transform: translateY(-50%) rotate(45deg);
+    border-block-start: var(--slds-g-sizing-border-2, 2px) solid var(--slds-g-color-on-accent-1, #ffffff);
+    border-inline-end: var(--slds-g-sizing-border-2, 2px) solid var(--slds-g-color-on-accent-1, #ffffff);
+}
+
+.c-board__col:first-child .c-board__head::before {
+    display: none;
+}
+
+/* Rounded pill ends on the first and last stage segments */
+.c-board__col:first-child .c-board__head {
+    border-start-start-radius: var(--slds-g-radius-border-pill, 15rem);
+    border-end-start-radius: var(--slds-g-radius-border-pill, 15rem);
+}
+
+.c-board__col:last-child .c-board__head {
+    border-start-end-radius: var(--slds-g-radius-border-pill, 15rem);
+    border-end-end-radius: var(--slds-g-radius-border-pill, 15rem);
+}
+
+.c-board__head-count {
+    flex: 0 0 auto;
+}
+
+/* Column body: thin grey divider on the left of every column */
+.c-board__body {
+    flex: 1 1 auto;
+    border-inline-start: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-board__col:last-child .c-board__body {
+    border-inline-end: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+}
+
+/* Large, light column total in success teal */
+.c-board__sum {
+    text-align: center;
+    font-size: var(--slds-g-font-scale-5, 1.75rem);
+    font-weight: var(--slds-g-font-weight-3, 300);
+    color: var(--slds-g-color-success-1, #056764);
+    padding-block: var(--slds-g-spacing-2, 0.5rem);
+    white-space: nowrap;
+}
+
+.c-board__list {
+    display: block;
+    padding: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-board__item + .c-board__item {
+    margin-block-start: var(--slds-g-spacing-2, 0.5rem);
+}
+
+/* --- Deal card --------------------------------------------------------- */
+.c-card {
+    background: var(--slds-g-color-surface-1, #ffffff);
+    border: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+    border-inline-start-width: var(--slds-g-sizing-border-3, 3px);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    box-shadow: var(--slds-g-shadow-1, 0px 2px 2px 0px #0000001a);
+    padding: var(--slds-g-spacing-3, 0.75rem);
+}
+
+.c-card__top {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+}
+
+.c-card__grip {
+    flex: 0 0 auto;
+    margin-block-start: var(--slds-g-spacing-1, 0.25rem);
+    --slds-c-icon-color-foreground: var(--slds-g-color-on-surface-2, #5c5c5c);
+}
+
+.c-card__name {
+    flex: 1 1 auto;
+    font-size: var(--slds-g-font-scale-1, 0.8125rem);
+}
+
+.c-card__menu {
+    flex: 0 0 auto;
+}
+
+.c-card__account {
+    display: block;
+    margin-block-start: var(--slds-g-spacing-1, 0.25rem);
+}
+
+.c-card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    margin-block-start: var(--slds-g-spacing-1, 0.25rem);
+}
+
+.c-card__stage {
+    color: var(--slds-g-color-on-surface-3, #03234d);
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+}
+
+

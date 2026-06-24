@@ -1,0 +1,64 @@
+/* Branded portal footer — Experience Cloud help center.
+   Uses the inherited brand hooks (--c-portal-*) set by the page theme class. */
+
+.c-portal-footer {
+    background: var(--c-portal-primary-dark, #000740);
+    color: var(--c-portal-on-primary, #ffffff);
+    margin-block-start: var(--slds-g-spacing-9, 3.5rem);
+}
+
+.c-portal-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--slds-g-spacing-4, 1rem);
+    inline-size: 100%;
+    padding-block: var(--slds-g-spacing-6, 2rem);
+    padding-inline: var(--slds-g-spacing-5, 1.5rem);
+}
+
+.c-portal-footer__brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    flex: 1 1 auto;
+}
+
+.c-portal-footer__wordmark {
+    font-size: var(--slds-g-font-scale-3, 1.25rem);
+    font-weight: var(--slds-g-font-weight-7, 700);
+}
+
+.c-portal-footer__name {
+    font-size: var(--slds-g-font-scale-1, 0.875rem);
+    opacity: 0.85;
+}
+
+.c-portal-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--slds-g-spacing-4, 1rem);
+    flex: 0 0 auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.c-portal-footer__link {
+    color: inherit;
+    text-decoration: none;
+    font-size: var(--slds-g-font-scale-1, 0.875rem);
+    opacity: 0.9;
+}
+
+.c-portal-footer__link:hover {
+    text-decoration: underline;
+    opacity: 1;
+}
+
+.c-portal-footer__legal {
+    flex: 1 1 100%;
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    opacity: 0.7;
+    margin-block-start: var(--slds-g-spacing-2, 0.5rem);
+}

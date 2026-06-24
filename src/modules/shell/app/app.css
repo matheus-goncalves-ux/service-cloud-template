@@ -14,9 +14,24 @@
     z-index: 2;
 }
 
-:host > page-builder {
+/* Full-screen builder apps manage their own internal scroll regions, so the
+   page host itself must clip (never scroll) to keep rails/canvas in place. */
+:host > page-builder,
+:host > page-journey-builder {
     flex: 1 1 0;
     min-height: 0;
+    overflow: hidden;
+}
+
+/* Full-screen portal pages (Experience Cloud) scroll as a single document
+   (header + main + footer). Owning the scroll here guarantees the footer is
+   always reachable and the browser document never scrolls past it, regardless
+   of the page's own host styles. */
+:host > page-help-center,
+:host > page-article-detail {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 /* Wrapper for main content + panel layout: fills remaining height, scroll only here */

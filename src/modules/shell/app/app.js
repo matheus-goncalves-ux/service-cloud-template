@@ -10,18 +10,38 @@ import {
 } from '../../../apps.config';
 import { toggleSLDS, activeSLDSVersion, STORAGE_KEY_SLDS_VERSION } from '../../../build/slds-loader';
 import Home from 'page/home';
+import SellerHome from 'page/sellerHome';
+import ServiceHome from 'page/serviceHome';
+import Accounts from 'page/accounts';
+import AccountDetail from 'page/accountDetail';
+import PersonalAccounts from 'page/personalAccounts';
+import PersonalAccountDetail from 'page/personalAccountDetail';
 import IconTest from 'page/iconTest';
 import Contacts from 'page/contacts';
 import ContactDetail from 'page/contactDetail';
+import Cases from 'page/cases';
+import CaseDetail from 'page/caseDetail';
+import Pipeline from 'page/pipeline';
+import OpportunityDetail from 'page/opportunityDetail';
 import Builder from 'page/builder';
 import NotFound from 'page/notFound';
 
 /** Option A: explicit registration – add one import + one entry here when adding a route */
 const ROUTE_COMPONENTS = {
     'page-home': Home,
+    'page-seller-home': SellerHome,
+    'page-service-home': ServiceHome,
+    'page-accounts': Accounts,
+    'page-account-detail': AccountDetail,
+    'page-personal-accounts': PersonalAccounts,
+    'page-personal-account-detail': PersonalAccountDetail,
     'page-icon-test': IconTest,
     'page-contacts': Contacts,
     'page-contact-detail': ContactDetail,
+    'page-cases': Cases,
+    'page-case-detail': CaseDetail,
+    'page-pipeline': Pipeline,
+    'page-opportunity-detail': OpportunityDetail,
     'page-builder': Builder,
 };
 
@@ -70,8 +90,9 @@ export default class App extends LightningElement {
         return app?.variant ?? 'standard';
     }
 
-    get isBuilderApp() {
-        return this.currentAppVariant === 'builder';
+    get isFullScreenApp() {
+        const variant = this.currentAppVariant;
+        return variant === 'builder' || variant === 'experience';
     }
 
     /** Pages exposed in the current app's primary nav (Standard tabs). */
@@ -127,7 +148,7 @@ export default class App extends LightningElement {
     }
 
     _syncBuilderRootClass() {
-        document.documentElement.classList.toggle('builder-active', this.isBuilderApp);
+        document.documentElement.classList.toggle('builder-active', this.isFullScreenApp);
     }
 
     _restorePreferences() {

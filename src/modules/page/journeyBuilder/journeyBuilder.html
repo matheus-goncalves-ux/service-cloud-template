@@ -1,0 +1,262 @@
+<template>
+    <ui-builder-header
+        app-name="Marketing Cloud"
+        document-title={journey.name}
+        show-toolbar
+        onback={handleBack}
+        onsettings={handleSettings}>
+        <div slot="toolbar-actions-left" class="slds-grid slds-grid_vertical-align-center">
+            <span class={statusBadgeClass}>{status}</span>
+            <span class="c-chip slds-m-left_x-small">
+                <lightning-icon
+                    icon-name="standard:segments"
+                    size="xx-small"
+                    class="c-chip__icon">
+                </lightning-icon>
+                <span class="c-chip__text slds-truncate" title={journey.segment.name}>{journey.segment.name}</span>
+                <span class="c-chip__count">{journey.segment.size}</span>
+            </span>
+            <lightning-button-icon-stateful
+                class="slds-m-left_x-small"
+                icon-name="utility:toggle_panel_left"
+                variant="border-filled"
+                selected={showLeftPanel}
+                alternative-text="Alternar painel de atividades"
+                title="Alternar painel de atividades"
+                onclick={toggleLeftPanel}>
+            </lightning-button-icon-stateful>
+        </div>
+        <div slot="toolbar-actions-right" class="slds-grid slds-grid_vertical-align-center">
+            <lightning-button
+                label="Salvar"
+                variant="neutral"
+                onclick={handleSave}
+                title="Salvar">
+            </lightning-button>
+            <lightning-button
+                class="slds-m-left_xx-small"
+                label={activateLabel}
+                variant="brand"
+                icon-name="utility:success"
+                disabled={activateDisabled}
+                onclick={handleActivate}
+                title="Ativar jornada">
+            </lightning-button>
+        </div>
+    </ui-builder-header>
+
+    <div class="c-body slds-grid slds-grid_vertical-stretch slds-is-relative">
+        <!-- Left rail: activity palette -->
+        <div class={leftRailClass}>
+            <ui-panel title={leftPanelTitle} show-close onclose={closeLeftPanel}>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                    Arraste atividades para o canvas para montar a jornada.
+                </p>
+                <template for:each={paletteGroups} for:item="group">
+                    <div key={group.id} class="slds-m-bottom_small">
+                        <p class="c-palette__group slds-text-title_caps slds-m-bottom_xx-small">{group.label}</p>
+                        <template for:each={group.items} for:item="item">
+                            <div key={item.type} class="c-palette__item" title={item.label}>
+                                <span class="c-palette__icon">
+                                    <lightning-icon icon-name={item.iconName} size="x-small"></lightning-icon>
+                                </span>
+                                <span class="c-palette__label">{item.label}</span>
+                                <lightning-icon
+                                    icon-name="utility:drag_and_drop"
+                                    size="xx-small"
+                                    class="c-palette__grip"
+                                    alternative-text="Arrastar">
+                                </lightning-icon>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </ui-panel>
+        </div>
+
+        <!-- Canvas -->
+        <main class="c-canvas slds-scrollable" aria-label="Canvas da jornada">
+            <div class="c-flow">
+                <template for:each={flowSegments} for:item="seg">
+                    <div key={seg.key} class="c-flow__segment">
+                        <template lwc:if={seg.showTopConnector}>
+                            <span class="c-connector" aria-hidden="true"></span>
+                        </template>
+
+                        <!-- Linear node -->
+                        <template lwc:if={seg.isNode}>
+                            <button
+                                type="button"
+                                class={seg.node.nodeClass}
+                                data-id={seg.node.id}
+                                aria-pressed={seg.node.ariaPressed}
+                                onclick={handleSelectNode}>
+                                <template lwc:if={seg.node.isStandardIcon}>
+                                    <lightning-icon icon-name={seg.node.iconName} size="small" class="c-node__icon"></lightning-icon>
+                                </template>
+                                <template lwc:else>
+                                    <span class="c-node__chip">
+                                        <lightning-icon icon-name={seg.node.iconName} size="x-small"></lightning-icon>
+                                    </span>
+                                </template>
+                                <span class="c-node__body">
+                                    <span class="c-node__type">{seg.node.typeLabel}</span>
+                                    <span class="c-node__title slds-truncate" title={seg.node.title}>{seg.node.title}</span>
+                                    <template lwc:if={seg.node.subtitle}>
+                                        <span class="c-node__subtitle slds-truncate" title={seg.node.subtitle}>{seg.node.subtitle}</span>
+                                    </template>
+                                </span>
+                                <template lwc:if={seg.node.badge}>
+                                    <span class="c-node__badge">{seg.node.badge}</span>
+                                </template>
+                            </button>
+                        </template>
+
+                        <!-- Decision node with branches -->
+                        <template lwc:if={seg.isDecision}>
+                            <button
+                                type="button"
+                                class={seg.node.nodeClass}
+                                data-id={seg.node.id}
+                                aria-pressed={seg.node.ariaPressed}
+                                onclick={handleSelectNode}>
+                                <lightning-icon icon-name={seg.node.iconName} size="small" class="c-node__icon"></lightning-icon>
+                                <span class="c-node__body">
+                                    <span class="c-node__type">{seg.node.typeLabel}</span>
+                                    <span class="c-node__title slds-truncate" title={seg.node.title}>{seg.node.title}</span>
+                                    <span class="c-node__subtitle slds-truncate" title={seg.node.subtitle}>{seg.node.subtitle}</span>
+                                </span>
+                            </button>
+                            <span class="c-connector" aria-hidden="true"></span>
+                            <div class="c-branches">
+                                <template for:each={seg.branches} for:item="branch">
+                                    <div key={branch.id} class="c-branch">
+                                        <span class={branch.labelClass}>{branch.label}</span>
+                                        <template for:each={branch.nodes} for:item="bnode">
+                                            <div key={bnode.id} class="c-branch__step">
+                                                <span class="c-connector" aria-hidden="true"></span>
+                                                <button
+                                                    type="button"
+                                                    class={bnode.nodeClass}
+                                                    data-id={bnode.id}
+                                                    aria-pressed={bnode.ariaPressed}
+                                                    onclick={handleSelectNode}>
+                                                    <template lwc:if={bnode.isStandardIcon}>
+                                                        <lightning-icon icon-name={bnode.iconName} size="small" class="c-node__icon"></lightning-icon>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <span class="c-node__chip">
+                                                            <lightning-icon icon-name={bnode.iconName} size="x-small"></lightning-icon>
+                                                        </span>
+                                                    </template>
+                                                    <span class="c-node__body">
+                                                        <span class="c-node__type">{bnode.typeLabel}</span>
+                                                        <span class="c-node__title slds-truncate" title={bnode.title}>{bnode.title}</span>
+                                                        <template lwc:if={bnode.subtitle}>
+                                                            <span class="c-node__subtitle slds-truncate" title={bnode.subtitle}>{bnode.subtitle}</span>
+                                                        </template>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </main>
+
+        <!-- Right rail: properties / overview -->
+        <div class="slds-panel slds-panel_docked slds-panel_docked-right slds-is-open c-rail c-rail_right slds-scrollable">
+            <ui-panel title={rightPanelTitle}>
+                <template lwc:if={hasSelection}>
+                    <div class="c-detail">
+                        <div class="c-detail__head">
+                            <template lwc:if={selectedNode.isStandardIcon}>
+                                <lightning-icon icon-name={selectedNode.iconName} size="small"></lightning-icon>
+                            </template>
+                            <template lwc:else>
+                                <span class="c-node__chip">
+                                    <lightning-icon icon-name={selectedNode.iconName} size="x-small"></lightning-icon>
+                                </span>
+                            </template>
+                            <div class="c-detail__heading">
+                                <p class="c-detail__type">{selectedNode.typeLabel}</p>
+                                <h3 class="c-detail__title">{selectedNode.title}</h3>
+                            </div>
+                        </div>
+                        <p class="c-detail__desc slds-text-body_small">{selectedNode.description}</p>
+
+                        <template lwc:if={selectedNode.stats}>
+                            <div class="c-metrics">
+                                <template for:each={selectedNode.stats} for:item="stat">
+                                    <div key={stat.label} class="c-metric">
+                                        <span class="c-metric__value">{stat.value}</span>
+                                        <span class="c-metric__label">{stat.label}</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <dl class="c-fields">
+                            <template for:each={selectedNode.details} for:item="field">
+                                <div key={field.label} class="c-fields__row">
+                                    <dt class="c-fields__label">{field.label}</dt>
+                                    <dd class="c-fields__value">{field.value}</dd>
+                                </div>
+                            </template>
+                        </dl>
+                    </div>
+                </template>
+
+                <template lwc:else>
+                    <div class="c-overview">
+                        <div class="c-overview__goal">
+                            <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                                <span class="c-overview__goal-label">{journey.goalLabel}</span>
+                                <span class="c-overview__goal-value">{journey.goalValue}/{journey.goalTarget}</span>
+                            </div>
+                            <lightning-progress-bar value={journey.goalPercent} size="large"></lightning-progress-bar>
+                        </div>
+
+                        <div class="c-metrics">
+                            <template for:each={journey.stats} for:item="stat">
+                                <div key={stat.id} class="c-metric">
+                                    <span class="c-metric__value">{stat.value}</span>
+                                    <span class="c-metric__label">{stat.label}</span>
+                                </div>
+                            </template>
+                        </div>
+
+                        <dl class="c-fields">
+                            <div class="c-fields__row">
+                                <dt class="c-fields__label">Segmento</dt>
+                                <dd class="c-fields__value">{journey.segment.name}</dd>
+                            </div>
+                            <div class="c-fields__row">
+                                <dt class="c-fields__label">Origem</dt>
+                                <dd class="c-fields__value">{journey.segment.source}</dd>
+                            </div>
+                            <div class="c-fields__row">
+                                <dt class="c-fields__label">Canal</dt>
+                                <dd class="c-fields__value">{journey.channel}</dd>
+                            </div>
+                        </dl>
+
+                        <div class="c-einstein">
+                            <div class="c-einstein__head">
+                                <lightning-icon icon-name="utility:einstein" size="x-small" class="c-einstein__icon"></lightning-icon>
+                                <span class="c-einstein__title">{journey.einstein.title}</span>
+                            </div>
+                            <p class="c-einstein__body slds-text-body_small">{journey.einstein.body}</p>
+                        </div>
+
+                        <p class="c-overview__meta slds-text-body_small slds-text-color_weak">{journey.lastModified}</p>
+                    </div>
+                </template>
+            </ui-panel>
+        </div>
+    </div>
+</template>

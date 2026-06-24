@@ -1,0 +1,65 @@
+/* Branded portal header — Experience Cloud help center.
+   Background/text come from the inherited brand hooks (--c-portal-*), which the
+   page sets per brand theme class. Custom properties inherit across the
+   synthetic shadow boundary, so this child component picks them up. */
+
+.c-portal-header {
+    background: var(--c-portal-primary, #00095b);
+    color: var(--c-portal-on-primary, #ffffff);
+}
+
+.c-portal-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-4, 1rem);
+    inline-size: 100%;
+    padding-block: var(--slds-g-spacing-3, 0.75rem);
+    padding-inline: var(--slds-g-spacing-5, 1.5rem);
+}
+
+.c-portal-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    flex: 0 0 auto;
+    text-decoration: none;
+    color: inherit;
+}
+
+.c-portal-header__wordmark {
+    font-size: var(--slds-g-font-scale-4, 1.5rem);
+    font-weight: var(--slds-g-font-weight-7, 700);
+    letter-spacing: 0.02em;
+}
+
+.c-portal-header__divider {
+    inline-size: var(--slds-g-sizing-border-1, 1px);
+    block-size: var(--slds-g-spacing-5, 1.5rem);
+    background: currentColor;
+    opacity: 0.4;
+}
+
+.c-portal-header__portal-name {
+    font-size: var(--slds-g-font-scale-1, 0.875rem);
+    max-inline-size: 14rem;
+    opacity: 0.92;
+}
+
+.c-portal-header__search {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+}
+
+.c-portal-header__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    flex: 0 0 auto;
+}
+
+/* Keep the brand wordmark from shrinking on small viewports */
+@media (max-width: 48em) {
+    .c-portal-header__portal-name {
+        display: none;
+    }
+}

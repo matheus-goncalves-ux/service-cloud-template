@@ -1,0 +1,199 @@
+/* page-contacts — "My Contacts" list view.
+   Filter bar, insight stat cards, bulk-action toolbar and a custom SLDS data
+   table, all wrapped in a single list-view card to mirror the standard
+   Salesforce console layout. Helper classes are namespaced (c-*) so they
+   never override SLDS blueprint classes. */
+
+/* ---------------------------------------------------------------------------
+   List-view card — single surface that hosts filters, KPI row, toolbar and
+   the table. Mirrors the unified panel from the Figma reference.
+   --------------------------------------------------------------------------- */
+
+.c-listview-card {
+    background: var(--slds-g-color-surface-container-1, #fff);
+    border: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    overflow: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   Filter bar — right-aligned Created/Owner comboboxes + 2 utility icons
+   --------------------------------------------------------------------------- */
+
+.c-list-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--slds-g-spacing-3, 0.75rem);
+    padding-block: var(--slds-g-spacing-2, 0.5rem);
+    padding-inline: var(--slds-g-spacing-4, 1rem);
+    border-block-end: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-list-filters__field {
+    /* Inline-label comboboxes — wide enough to keep the label and select on a
+       single line (especially after Portuguese translation). No SLDS hook
+       exists for combobox width; intentional value.
+       white-space: nowrap cascades into lightning-combobox's label via
+       synthetic shadow inheritance, preventing the label from wrapping. */
+    min-inline-size: 16rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.c-list-filters__icons {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+}
+
+/* ---------------------------------------------------------------------------
+   Insight stat cards — single row with internal vertical dividers.
+   First card uses the accent border to mark the active filter ("selected").
+   --------------------------------------------------------------------------- */
+
+.c-stat-cards {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding-block: var(--slds-g-spacing-3, 0.75rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+    list-style: none;
+    overflow-x: auto;
+    border-block-end: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-stat-card {
+    flex: 0 0 auto;
+    /* No SLDS hook for this card width; intentional minimum to keep labels
+       readable while still fitting 7 cards across the typical viewport. */
+    min-inline-size: 8.5rem;
+    box-sizing: border-box;
+    padding-block: var(--slds-g-spacing-2, 0.5rem);
+    padding-inline: var(--slds-g-spacing-3, 0.75rem);
+    border: 0;
+    border-radius: var(--slds-g-radius-border-1, 0.25rem);
+    background: transparent;
+}
+
+/* Vertical divider between adjacent cards (not before the first). */
+.c-stat-card + .c-stat-card {
+    margin-inline-start: var(--slds-g-spacing-2, 0.5rem);
+    position: relative;
+}
+
+.c-stat-card + .c-stat-card::before {
+    content: '';
+    position: absolute;
+    inset-block: var(--slds-g-spacing-2, 0.5rem);
+    inset-inline-start: calc(-1 * var(--slds-g-spacing-2, 0.5rem) / 2);
+    inline-size: var(--slds-g-sizing-border-1, 1px);
+    background: var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-stat-card_selected {
+    border: var(--slds-g-sizing-border-2, 2px) solid var(--slds-g-color-accent-2, #0250d9);
+}
+
+/* When the selected card sits adjacent to another, hide the divider that
+   would otherwise overlap the accent border. */
+.c-stat-card_selected + .c-stat-card::before {
+    display: none;
+}
+
+.c-stat-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+}
+
+.c-stat-card__label {
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+.c-stat-card__info {
+    flex: none;
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+.c-stat-card__value {
+    display: block;
+    margin-block-start: var(--slds-g-spacing-1, 0.25rem);
+    font-size: var(--slds-g-font-scale-4, 1.5rem);
+    font-weight: var(--slds-g-font-weight-7, 700);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+/* ---------------------------------------------------------------------------
+   Toolbar — meta text on the left, bulk-action button group on the right
+   --------------------------------------------------------------------------- */
+
+.c-list-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    padding-block: var(--slds-g-spacing-2, 0.5rem);
+    padding-inline: var(--slds-g-spacing-4, 1rem);
+}
+
+.c-list-toolbar__meta {
+    margin: 0;
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+.c-list-toolbar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+/* ---------------------------------------------------------------------------
+   Contacts table — sits at the bottom of the card; remove the outer wrap
+   border so it visually fuses with the card edges.
+   --------------------------------------------------------------------------- */
+
+.c-table-wrap {
+    overflow-x: auto;
+    border-block-start: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+    padding-inline: var(--slds-g-spacing-4, 1rem);
+    padding-block: var(--slds-g-spacing-4, 1rem);
+}
+
+.c-contacts-table {
+    inline-size: 100%;
+}
+
+/* Utility column widths — no SLDS hook exists for these; intentional values. */
+.c-col-select {
+    inline-size: 2.75rem;
+    padding-inline-start: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-col-bookmark {
+    inline-size: 2.75rem;
+}
+
+.c-col-actions {
+    inline-size: 6rem;
+}
+
+.c-sort-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: var(--slds-g-spacing-1, 0.25rem);
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+.c-row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+}

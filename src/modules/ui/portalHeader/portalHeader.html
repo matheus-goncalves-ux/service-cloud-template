@@ -1,0 +1,57 @@
+<template>
+    <header class="c-portal-header" role="banner">
+        <div class="c-portal-header__inner">
+            <a href="#" class="c-portal-header__brand" onclick={handleHome} title={portalName}>
+                <span class="c-portal-header__wordmark">{wordmark}</span>
+                <span class="c-portal-header__divider" aria-hidden="true"></span>
+                <span class="c-portal-header__portal-name slds-truncate">{portalName}</span>
+            </a>
+
+            <div class="c-portal-header__search">
+                <lightning-input
+                    type="search"
+                    label="Buscar artigos"
+                    variant="label-hidden"
+                    placeholder="Buscar artigos, TSBs, procedimentos..."
+                    onchange={handleSearch}>
+                </lightning-input>
+            </div>
+
+            <div class="c-portal-header__actions">
+                <lightning-button-menu
+                    alternative-text="Trocar marca do portal"
+                    label={brandName}
+                    menu-alignment="right"
+                    variant="border-filled"
+                    onselect={handleBrandSelect}
+                    class="c-portal-header__switcher">
+                    <template for:each={brandOptions} for:item="b">
+                        <lightning-menu-item
+                            key={b.id}
+                            value={b.id}
+                            label={b.name}
+                            checked={b.checked}>
+                        </lightning-menu-item>
+                    </template>
+                </lightning-button-menu>
+
+                <lightning-avatar
+                    size="small"
+                    initials={userInitials}
+                    fallback-icon-name="standard:avatar"
+                    alternative-text={userName}
+                    variant="circle"
+                    class="c-portal-header__avatar">
+                </lightning-avatar>
+
+                <lightning-button-icon
+                    icon-name="utility:logout"
+                    variant="border-filled"
+                    alternative-text="Sair do portal"
+                    title="Sair do portal"
+                    onclick={handleExit}>
+                </lightning-button-icon>
+            </div>
+        </div>
+    </header>
+</template>

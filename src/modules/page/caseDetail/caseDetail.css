@@ -1,0 +1,298 @@
+/* Case Detail – Service Cloud console record page */
+
+/* Priority indicator (dot + label so meaning is not conveyed by color alone) */
+.c-priority {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    white-space: nowrap;
+}
+
+.c-priority__dot {
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: var(--slds-g-radius-border-circle, 50%);
+    background: var(--slds-g-color-on-surface-2, #2e2e2e);
+}
+
+.c-priority_high .c-priority__dot {
+    background: var(--slds-g-color-error-1, #b60554);
+}
+
+.c-priority_medium .c-priority__dot {
+    background: var(--slds-g-color-warning-1, #8c4b02);
+}
+
+.c-priority_low .c-priority__dot {
+    background: var(--slds-g-color-success-1, #056764);
+}
+
+/* 2-column flex-wrap grid for read-only field groups (Figma 919:163263) */
+.c-field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--slds-g-spacing-3, 0.75rem);
+}
+
+.c-field-grid__item {
+    min-inline-size: 0;
+}
+
+/* Vertical stack for cards in a console column.
+   Uses flex `gap` (not per-card margin) because vertical margins on the
+   <lightning-card> host collapse/no-op; gap is explicit and reliable.
+   Value matches the Figma spec: 12px = --slds-g-spacing-3. */
+.c-card-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slds-g-spacing-3, 0.75rem);
+}
+
+/* SLA / Qualidade do serviço card (Figma 919:161498) */
+.c-sla-card__title {
+    font-size: var(--slds-g-font-scale-3, 1.25rem);
+    font-weight: var(--slds-g-font-weight-4, 400);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+.c-sla-tile__title {
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    font-weight: var(--slds-g-font-weight-7, 700);
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+    text-transform: none;
+}
+
+.c-sla-tile__detail {
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+.c-sla-tile__detail_done {
+    color: var(--slds-g-color-on-success-1, #056764);
+}
+
+.c-sla-tile__detail_overdue {
+    color: var(--slds-g-color-on-error-1, #ba0517);
+}
+
+/* ── Feed tab: compositor + barra + filtros + publicações ────────────────── */
+
+/* Bottom border radius on the scoped-tab content panel (8px) */
+.c-feed-tab-content {
+    border-end-start-radius: var(--slds-g-radius-border-2, 0.5rem);
+    border-end-end-radius: var(--slds-g-radius-border-2, 0.5rem);
+}
+
+/* Top border radius on the scoped-tab nav bar (8px) */
+.c-feed-tab-nav {
+    border-start-start-radius: var(--slds-g-radius-border-2, 0.5rem);
+    border-start-end-radius: var(--slds-g-radius-border-2, 0.5rem);
+}
+
+/* Linha do compositor: input + botão lado a lado */
+.c-feed-composer {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    padding: var(--slds-g-spacing-3, 0.75rem);
+}
+
+/* Input expande para preencher o espaço disponível */
+.c-feed-composer__input {
+    flex: 1 0 0;
+    min-inline-size: 0;
+}
+
+/* Barra: ordenação (esquerda) / busca + ações (direita) */
+.c-feed-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-feed-toolbar__right {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+/* Largura fixa do campo de busca, conforme o design */
+.c-feed-search {
+    inline-size: 13.25rem;
+}
+
+/* Filtros do feed: faixa de abas com sublinhado azul no item ativo */
+.c-feed-filters {
+    margin-block-end: var(--slds-g-spacing-3, 0.75rem);
+}
+
+/* ── Publicação (estilo Chatter) ─────────────────────────────────────────── */
+
+/* Remove o max-width padrão (49rem) e a centralização do slds-feed */
+.c-feed-container {
+    max-inline-size: none;
+    margin-inline: 0;
+}
+
+/* A lista de posts ocupa toda a largura disponível do card */
+.c-feed-list {
+    inline-size: 100%;
+}
+
+/* Cada item: separador inferior sutil, largura total */
+.c-post {
+    inline-size: 100%;
+    border-block-end: var(--slds-g-sizing-border-1, 1px) solid
+        var(--slds-g-color-border-1, #c9c9c9);
+}
+
+/* Chevron de recolher à esquerda, alinhado verticalmente */
+.c-post__toggle {
+    align-self: center;
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+/* Nome do autor: negrito, navy, sem sublinhado */
+.c-post__author {
+    font-weight: var(--slds-g-font-weight-7, 700);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+    text-decoration: none;
+}
+
+.c-post__author:hover {
+    text-decoration: underline;
+}
+
+/* Data: pequena, navy, sem quebra */
+.c-post__date {
+    color: var(--slds-g-color-on-surface-3, #03234d);
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    white-space: nowrap;
+}
+
+/* Linha do destinatário: ícone de escopo + "Para: Interno" */
+.c-post__recipient {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    margin-block-start: var(--slds-g-spacing-1, 0.25rem);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+}
+
+/* Ícone de escopo: círculo azul com glifo branco */
+.c-post__recipient-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1rem;
+    block-size: 1rem;
+    overflow: hidden;
+    border-radius: var(--slds-g-radius-border-circle, 100%);
+    background: var(--slds-g-color-accent-container-1, #066afe);
+}
+
+/* Corpo da publicação */
+.c-post__content {
+    margin-block-start: var(--slds-g-spacing-2, 0.5rem);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+/* Rodapé: ação Comentar */
+.c-post__footer {
+    margin-block-start: var(--slds-g-spacing-3, 0.75rem);
+}
+
+.c-post__action {
+    display: inline-flex;
+    align-items: center;
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+    text-decoration: none;
+}
+
+.c-post__action:hover {
+    text-decoration: underline;
+}
+
+/* ── Collapsible section pill header (Figma: Expandable Section blueprint) ── */
+
+/* Wrapper: stacks header + content with 8px gap */
+.c-section-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+/* Pill-style toggle button — full-width via parent flex-stretch, gray background, rounded */
+.c-section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+    padding-block: 0;
+    /* 32px height — no hook exists for this exact size; intentional value */
+    min-block-size: 2rem;
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+    border: none;
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+    font-size: var(--slds-g-font-scale-2, 1rem);
+    font-family: inherit;
+    cursor: pointer;
+    text-align: start;
+}
+
+.c-section-header:hover {
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+    filter: brightness(0.96);
+}
+
+/* ── Related tab – nested cards ─────────────────────────────────────────── */
+
+/* Vertical stack of nested cards with consistent gap (12px = spacing-3) */
+.c-related-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slds-g-spacing-3, 0.75rem);
+}
+
+/* Article list row: bottom border divider, no list-style */
+.c-article-row {
+    list-style: none;
+    border-block-end: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-article-row:last-child {
+    border-block-end: none;
+}
+
+/* Article title link — matches SLDS accent-2 color */
+.c-article-link {
+    color: var(--slds-g-color-accent-2, #d7541d);
+    text-decoration: none;
+    display: block;
+}
+
+.c-article-link:hover {
+    text-decoration: underline;
+}
+
+/* Semibold section label (e.g. "Artigos sugeridos") */
+.c-section-label {
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    font-weight: 590;
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+/* File drop zone – dashed border upload area */
+.c-file-drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--slds-g-sizing-border-1, 1px) dashed var(--slds-g-color-border-2, #5c5c5c);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    padding-block: var(--slds-g-spacing-3, 0.75rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+}
+

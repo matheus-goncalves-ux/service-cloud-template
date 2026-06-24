@@ -1,0 +1,193 @@
+<template>
+    <div class={portalClass}>
+        <ui-portal-header
+            brand={brand}
+            brands={brands}
+            user-name={user.name}
+            user-initials={user.initials}
+            onsearch={handleSearch}
+            onbrandchange={handleBrandChange}
+            onhome={handleHome}
+            onexit={handleExit}>
+        </ui-portal-header>
+
+        <main class="c-portal__main">
+            <!-- Hero -->
+            <section class="c-hero" aria-label="Buscar ajuda">
+                <div class="c-hero__inner">
+                    <p class="c-hero__eyebrow">{brand.portalName}</p>
+                    <h1 class="c-hero__title">Como podemos ajudar, {user.firstName}?</h1>
+                    <p class="c-hero__subtitle">
+                        Busque procedimentos, boletins técnicos (TSBs) e guias da rede.
+                    </p>
+                    <div class="c-hero__search">
+                        <lightning-input
+                            type="search"
+                            label="Buscar na central de ajuda"
+                            variant="label-hidden"
+                            placeholder="Ex.: rollback OTA, calibração ADAS, garantia..."
+                            onchange={handleSearch}>
+                        </lightning-input>
+                    </div>
+                </div>
+            </section>
+
+            <div class="c-portal__content">
+                <!-- Filtered results (search or topic) -->
+                <template lwc:if={hasFilter}>
+                    <section class="c-section" aria-label="Resultados">
+                        <div class="c-section__head">
+                            <div>
+                                <h2 class="c-section__title">{resultsHeading}</h2>
+                                <p class="c-section__meta">{resultsCount}</p>
+                            </div>
+                            <lightning-button
+                                label="Limpar"
+                                variant="neutral"
+                                icon-name="utility:close"
+                                onclick={handleClearFilter}>
+                            </lightning-button>
+                        </div>
+
+                        <template lwc:if={results.length}>
+                            <ul class="c-article-list">
+                                <template for:each={results} for:item="article">
+                                    <li key={article.id} class="c-article-list__item">
+                                        <button
+                                            type="button"
+                                            class="c-article-row"
+                                            data-id={article.id}
+                                            onclick={handleArticleOpen}>
+                                            <span class="c-article-row__icon">
+                                                <lightning-icon icon-name="standard:knowledge" size="small" alternative-text="Artigo"></lightning-icon>
+                                            </span>
+                                            <span class="c-article-row__body">
+                                                <span class="c-article-row__title">{article.title}</span>
+                                                <span class="c-article-row__summary">{article.summary}</span>
+                                                <span class="c-article-row__meta">{article.meta}</span>
+                                            </span>
+                                            <lightning-icon class="c-article-row__chevron" icon-name="utility:chevronright" size="x-small" alternative-text=""></lightning-icon>
+                                        </button>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                        <template lwc:else>
+                            <div class="c-empty">
+                                <lightning-icon icon-name="standard:search" size="small" alternative-text=""></lightning-icon>
+                                <p>Nenhum artigo encontrado. Tente outro termo.</p>
+                            </div>
+                        </template>
+                    </section>
+                </template>
+
+                <!-- Default landing -->
+                <template lwc:else>
+                    <!-- Featured -->
+                    <section class="c-section" aria-label="Artigos em destaque">
+                        <div class="c-section__head">
+                            <h2 class="c-section__title">Em destaque</h2>
+                        </div>
+                        <div class="slds-grid slds-wrap slds-gutters c-card-grid">
+                            <template for:each={featuredArticles} for:item="article">
+                                <div key={article.id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-bottom_small c-grid-cell">
+                                    <button
+                                        type="button"
+                                        class="c-article-card"
+                                        data-id={article.id}
+                                        onclick={handleArticleOpen}>
+                                        <span class="c-article-card__type">{article.type}</span>
+                                        <span class="c-article-card__title">{article.title}</span>
+                                        <span class="c-article-card__summary">{article.summary}</span>
+                                        <span class="c-article-card__meta">{article.readTime} • {article.topicLabel}</span>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </section>
+
+                    <!-- Topics -->
+                    <section class="c-section" aria-label="Tópicos">
+                        <div class="c-section__head">
+                            <h2 class="c-section__title">Explorar por tópico</h2>
+                        </div>
+                        <div class="slds-grid slds-wrap slds-gutters c-card-grid">
+                            <template for:each={topics} for:item="topic">
+                                <div key={topic.id} class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-p-bottom_small c-grid-cell">
+                                    <button
+                                        type="button"
+                                        class="c-topic-tile"
+                                        data-id={topic.id}
+                                        onclick={handleTopicOpen}>
+                                        <span class="c-topic-tile__icon">
+                                            <lightning-icon icon-name={topic.iconName} size="small" alternative-text=""></lightning-icon>
+                                        </span>
+                                        <span class="c-topic-tile__body">
+                                            <span class="c-topic-tile__label">{topic.label}</span>
+                                            <span class="c-topic-tile__desc">{topic.description}</span>
+                                            <span class="c-topic-tile__count">{topic.count} artigos</span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </section>
+
+                    <!-- Popular + My Cases -->
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3 slds-p-bottom_small">
+                            <section class="c-section" aria-label="Mais acessados">
+                                <div class="c-section__head">
+                                    <h2 class="c-section__title">Mais acessados</h2>
+                                </div>
+                                <ul class="c-article-list">
+                                    <template for:each={popularArticles} for:item="article">
+                                        <li key={article.id} class="c-article-list__item">
+                                            <button
+                                                type="button"
+                                                class="c-article-row"
+                                                data-id={article.id}
+                                                onclick={handleArticleOpen}>
+                                                <span class="c-article-row__icon">
+                                                    <lightning-icon icon-name="standard:knowledge" size="small" alternative-text="Artigo"></lightning-icon>
+                                                </span>
+                                                <span class="c-article-row__body">
+                                                    <span class="c-article-row__title">{article.title}</span>
+                                                    <span class="c-article-row__meta">{article.meta}</span>
+                                                </span>
+                                                <lightning-icon class="c-article-row__chevron" icon-name="utility:chevronright" size="x-small" alternative-text=""></lightning-icon>
+                                            </button>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </section>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-bottom_small">
+                            <lightning-card title="Meus Casos" icon-name="standard:case">
+                                <ul class="c-cases">
+                                    <template for:each={myCases} for:item="kase">
+                                        <li key={kase.id} class="c-cases__item">
+                                            <div class="c-cases__line">
+                                                <span class="c-cases__number">{kase.caseNumber}</span>
+                                                <span class={kase.badgeClass}>{kase.status}</span>
+                                            </div>
+                                            <p class="c-cases__subject slds-truncate" title={kase.subject}>{kase.subject}</p>
+                                            <p class="c-cases__date">{kase.dateRelative}</p>
+                                        </li>
+                                    </template>
+                                </ul>
+                                <div slot="footer" class="c-cases__footer">
+                                    <lightning-icon icon-name="utility:chat" size="xx-small" alternative-text=""></lightning-icon>
+                                    <span>Precisa de ajuda? Fale com o suporte da rede.</span>
+                                </div>
+                            </lightning-card>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </main>
+
+        <ui-portal-footer brand={brand}></ui-portal-footer>
+    </div>
+</template>

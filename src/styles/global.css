@@ -3,6 +3,54 @@ html.builder-active {
     overscroll-behavior-y: none;
 }
 
+/* ------------------------------------------------------------------ *
+ * Experience Cloud portal — brand themes (brand switcher).
+ * Defined globally (not component-scoped) so the custom --c-portal-*
+ * properties cascade down to the portal pages and their child
+ * components (ui-portal-header / ui-portal-footer).
+ *
+ * The hex values are real automotive brand colors with no SLDS palette
+ * equivalent, so they are set directly here (per SLDS "no hook exists"
+ * guidance). Each theme also remaps the SLDS accent hooks so Lightning
+ * Base Components (brand buttons, focus rings) match the active brand.
+ * ------------------------------------------------------------------ */
+
+.c-portal_ford {
+    --c-portal-primary: #00095b;
+    --c-portal-primary-dark: #000740;
+    --c-portal-on-primary: #ffffff;
+    --slds-g-color-accent-1: #00095b;
+    --slds-g-color-accent-2: #000740;
+    --slds-g-color-accent-3: #00052e;
+    --slds-g-color-accent-container-1: #00095b;
+    --slds-g-color-accent-container-2: #000740;
+    --slds-g-color-accent-container-3: #00052e;
+}
+
+.c-portal_toyota {
+    --c-portal-primary: #eb0a1e;
+    --c-portal-primary-dark: #b8030f;
+    --c-portal-on-primary: #ffffff;
+    --slds-g-color-accent-1: #eb0a1e;
+    --slds-g-color-accent-2: #c20917;
+    --slds-g-color-accent-3: #970711;
+    --slds-g-color-accent-container-1: #eb0a1e;
+    --slds-g-color-accent-container-2: #c20917;
+    --slds-g-color-accent-container-3: #970711;
+}
+
+.c-portal_vw {
+    --c-portal-primary: #001e50;
+    --c-portal-primary-dark: #001435;
+    --c-portal-on-primary: #ffffff;
+    --slds-g-color-accent-1: #001e50;
+    --slds-g-color-accent-2: #001435;
+    --slds-g-color-accent-3: #000c20;
+    --slds-g-color-accent-container-1: #001e50;
+    --slds-g-color-accent-container-2: #001435;
+    --slds-g-color-accent-container-3: #000c20;
+}
+
 /* Global Header: Action Icons */
 .lightning-button-menu_custom .slds-button__icon {
     fill: light-dark(var(--slds-g-color-palette-neutral-60), var(--slds-g-color-palette-neutral-40));

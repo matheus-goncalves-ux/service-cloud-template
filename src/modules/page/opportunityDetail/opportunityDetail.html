@@ -1,0 +1,453 @@
+<template>
+    <div class="slds-p-horizontal_medium slds-p-bottom_large">
+        <template lwc:if={hasRecord}>
+            <!-- ===== Highlights Panel ===== -->
+            <div class="slds-page-header slds-page-header_record-home">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <lightning-icon
+                                    icon-name="standard:opportunity"
+                                    size="medium"
+                                    alternative-text="Opportunity">
+                                </lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-page-header__name">
+                                    <div class="slds-page-header__name-title">
+                                        <h1>
+                                            <span class="slds-page-header__title-meta-text">Oportunidade</span>
+                                            <span class="slds-page-header__title slds-truncate" title={name}>{name}</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-page-header__col-actions">
+                        <div class="slds-page-header__controls">
+                            <div class="slds-page-header__control">
+                                <lightning-button-group>
+                                    <lightning-button label="Seguir" icon-name="utility:add"></lightning-button>
+                                    <lightning-button label="Editar"></lightning-button>
+                                    <lightning-button label="Novo caso"></lightning-button>
+                                    <lightning-button label="Nova anotação"></lightning-button>
+                                    <lightning-button-menu
+                                        alternative-text="Mais ações"
+                                        variant="border-filled"
+                                        icon-size="medium"
+                                        menu-alignment="right">
+                                        <lightning-menu-item label="Clonar" value="clone"></lightning-menu-item>
+                                        <lightning-menu-item label="Excluir" value="delete"></lightning-menu-item>
+                                    </lightning-button-menu>
+                                </lightning-button-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highlights detail strip -->
+                <div class="slds-page-header__row slds-page-header__row_gutters">
+                    <div class="slds-page-header__col-details">
+                        <ul class="slds-page-header__detail-row">
+                            <li class="slds-page-header__detail-block">
+                                <p class="slds-text-title slds-truncate slds-m-bottom_xx-small" title="Nome da conta">Nome da conta</p>
+                                <a href="#" onclick={handlePreventDefault} class="slds-truncate" title={record.accountName}>{record.accountName}</a>
+                            </li>
+                            <li class="slds-page-header__detail-block">
+                                <p class="slds-text-title slds-truncate slds-m-bottom_xx-small" title="Data de fechamento">Data de fechamento</p>
+                                <p class="slds-truncate" title={record.closeDate}>{record.closeDate}</p>
+                            </li>
+                            <li class="slds-page-header__detail-block">
+                                <p class="slds-text-title slds-truncate slds-m-bottom_xx-small" title="Valor">Valor</p>
+                                <p class="slds-truncate" title={record.amountFull}>{record.amountFull}</p>
+                            </li>
+                            <li class="slds-page-header__detail-block">
+                                <p class="slds-text-title slds-truncate slds-m-bottom_xx-small" title="Proprietário da oportunidade">Proprietário da oportunidade</p>
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                    <lightning-icon icon-name="standard:user" size="x-small" alternative-text="Proprietário" class="slds-m-right_xx-small"></lightning-icon>
+                                    <a href="#" onclick={handlePreventDefault} class="slds-truncate" title={record.ownerName}>{record.ownerName}</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Path + Mark Complete ===== -->
+            <article class="slds-card slds-m-vertical_small">
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <div class="slds-col">
+                            <div class="slds-path">
+                                <div class="slds-path__track">
+                                    <div class="slds-grid slds-path__scroller-container">
+                                        <div class="slds-path__scroller" role="application">
+                                            <div class="slds-path__scroller_inner">
+                                                <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal" aria-label="Estágio da oportunidade">
+                                                    <template for:each={pathStages} for:item="stage">
+                                                        <li key={stage.key} class={stage.itemClass} role="presentation">
+                                                            <a
+                                                                aria-selected={stage.ariaSelected}
+                                                                class="slds-path__link"
+                                                                href="#"
+                                                                role="option"
+                                                                tabindex={stage.tabIndex}
+                                                                data-stage={stage.key}
+                                                                onclick={handleStageClick}>
+                                                                <span class="slds-path__stage">
+                                                                    <lightning-icon
+                                                                        lwc:if={stage.isComplete}
+                                                                        icon-name="utility:check"
+                                                                        size="x-small"
+                                                                        variant="inverse"
+                                                                        alternative-text="Estágio concluído">
+                                                                    </lightning-icon>
+                                                                    <span lwc:if={stage.isCurrent} class="slds-assistive-text">Estágio atual:</span>
+                                                                </span>
+                                                                <span class="slds-path__title">{stage.label}</span>
+                                                            </a>
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-no-flex slds-m-left_small">
+                            <lightning-button
+                                variant="brand"
+                                label={markCompleteLabel}
+                                icon-name="utility:check"
+                                onclick={handleMarkComplete}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ===== Einstein scoped notification ===== -->
+            <div class={scoreNotificationClass} role="status">
+                <div class="slds-media__figure">
+                    <lightning-icon
+                        icon-name="utility:einstein"
+                        size="small"
+                        variant={scoreIconVariant}
+                        alternative-text="Einstein Opportunity Scoring">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <p><strong>{scoreHeadline}</strong> &mdash; {scoreInsight}</p>
+                </div>
+            </div>
+
+            <!-- ===== Two-column record body ===== -->
+            <div class="slds-grid slds-gutters slds-wrap slds-m-top_medium">
+                <!-- Main region: Activity / Details / Chatter -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12">
+                    <lightning-card>
+                        <div class="slds-tabs_default slds-p-horizontal_small slds-p-bottom_small">
+                            <ul class="slds-tabs_default__nav" role="tablist">
+                                <template for:each={tabs} for:item="tab">
+                                    <li key={tab.value} class={tab.itemClass} title={tab.label} role="presentation">
+                                        <a class="slds-tabs_default__link" href="#" role="tab" tabindex={tab.tabIndex} aria-selected={tab.ariaSelected} data-tab={tab.value} onclick={handleTabSelect}>{tab.label}</a>
+                                    </li>
+                                </template>
+                            </ul>
+
+                            <!-- Activity -->
+                            <div class={activityContentClass} role="tabpanel">
+                                <div class="slds-p-around_medium">
+                                    <!-- Composer action bar -->
+                                    <div class="c-activity-actions slds-m-bottom_medium">
+                                        <lightning-button label="Registrar ligação" icon-name="utility:call"></lightning-button>
+                                        <lightning-button label="Nova tarefa" icon-name="utility:task"></lightning-button>
+                                        <lightning-button label="Novo evento" icon-name="utility:event"></lightning-button>
+                                        <lightning-button label="E-mail" icon-name="utility:email"></lightning-button>
+                                    </div>
+
+                                    <!-- Filters line -->
+                                    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_xx-small">
+                                        <p class="slds-text-body_small slds-text-color_weak">
+                                            Filtros: Todo o período &bull; Todas as atividades &bull; Todos os tipos
+                                        </p>
+                                        <lightning-button-icon
+                                            icon-name="utility:settings"
+                                            variant="bare"
+                                            alternative-text="Configurar filtros"
+                                            title="Configurar filtros">
+                                        </lightning-button-icon>
+                                    </div>
+                                    <div class="slds-grid slds-grid_align-end slds-m-bottom_small">
+                                        <lightning-button variant="base" label="Atualizar" class="slds-m-right_medium"></lightning-button>
+                                        <lightning-button variant="base" label="Expandir tudo" class="slds-m-right_medium"></lightning-button>
+                                        <lightning-button variant="base" label="Ver tudo"></lightning-button>
+                                    </div>
+
+                                    <!-- Upcoming & Overdue -->
+                                    <h3 class="slds-text-title_caps slds-p-vertical_x-small slds-p-horizontal_small slds-theme_shade slds-m-bottom_small">
+                                        Próximas e em atraso
+                                    </h3>
+
+                                    <template lwc:if={hasActivities}>
+                                        <ul class="slds-timeline">
+                                            <template for:each={activityItems} for:item="item">
+                                                <li key={item.id} class="slds-timeline__item slds-m-bottom_small">
+                                                    <div class="slds-media">
+                                                        <div class="slds-media__figure">
+                                                            <lightning-icon
+                                                                icon-name={item.iconName}
+                                                                size="small"
+                                                                alternative-text={item.type}>
+                                                            </lightning-icon>
+                                                        </div>
+                                                        <div class="slds-media__body">
+                                                            <div class="slds-grid slds-grid_align-spread">
+                                                                <p class="slds-truncate"><strong>{item.subject}</strong></p>
+                                                                <p class="slds-text-body_small slds-text-color_weak slds-no-flex">{item.date}</p>
+                                                            </div>
+                                                            <p class="slds-text-body_small slds-m-top_xx-small">{item.description}</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="slds-text-align_center slds-p-vertical_large">
+                                            <p>Nenhuma atividade para mostrar.</p>
+                                            <p class="slds-text-color_weak slds-m-top_xx-small">
+                                                Comece enviando um e-mail, agendando uma tarefa e muito mais.
+                                            </p>
+                                        </div>
+                                    </template>
+
+                                    <div class="slds-align_absolute-center slds-m-top_small">
+                                        <lightning-button variant="neutral" label="Mostrar todas as atividades"></lightning-button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Details -->
+                            <div class={detailsContentClass} role="tabpanel">
+                                <div class="slds-p-around_medium">
+                                    <div class="slds-grid slds-wrap">
+                                        <template for:each={detailFields} for:item="field">
+                                            <div key={field.key} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-vertical_x-small slds-p-right_medium">
+                                                <div class="slds-form-element slds-form-element_readonly slds-form-element_stacked">
+                                                    <span class="slds-form-element__label">{field.label}</span>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-form-element__static slds-truncate" title={field.value}>{field.value}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <h3 class="slds-text-title_caps slds-m-top_medium slds-m-bottom_x-small">Descrição</h3>
+                                    <p class="slds-m-bottom_medium">{description}</p>
+                                    <h3 class="slds-text-title_caps slds-m-bottom_x-small">Próximo passo</h3>
+                                    <p>{nextStep}</p>
+                                </div>
+                            </div>
+
+                            <!-- Chatter -->
+                            <div class={chatterContentClass} role="tabpanel">
+                                <div class="slds-p-around_medium">
+                                    <lightning-textarea
+                                        name="chatterPost"
+                                        label="Compartilhar uma atualização"
+                                        variant="label-hidden"
+                                        placeholder="Compartilhe uma atualização..."
+                                        value={note}
+                                        onchange={handleNoteChange}>
+                                    </lightning-textarea>
+                                    <div class="slds-grid slds-grid_align-end slds-m-top_x-small">
+                                        <lightning-button variant="brand" label="Compartilhar"></lightning-button>
+                                    </div>
+                                    <div class="slds-text-align_center slds-p-vertical_large slds-text-color_weak">
+                                        <p>Nenhuma publicação ainda. Seja o primeiro a comentar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-card>
+                </div>
+
+                <!-- Related region: collapsible related-list cards -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12 c-card-stack">
+                    <!-- Products -->
+                    <lightning-card title={productsTitle} icon-name="standard:product">
+                        <lightning-button-icon
+                            slot="actions"
+                            icon-name={ui.productsChevron}
+                            variant="bare"
+                            alternative-text="Expandir ou recolher Produtos"
+                            title="Expandir ou recolher"
+                            data-section="products"
+                            onclick={handleToggleSection}>
+                        </lightning-button-icon>
+                        <template lwc:if={ui.products}>
+                            <ul class="slds-p-horizontal_medium slds-p-bottom_x-small">
+                                <template for:each={products} for:item="product">
+                                    <li key={product.id} class="c-product">
+                                        <div class="c-product__line">
+                                            <span class="slds-truncate" title={product.name}>{product.name}</span>
+                                            <span class="c-product__total">{product.totalLabel}</span>
+                                        </div>
+                                        <p class="slds-text-body_small slds-text-color_weak">{product.quantity} &times; {product.unitPriceLabel}</p>
+                                    </li>
+                                </template>
+                            </ul>
+                            <div slot="footer" class="c-product__footer">
+                                <span>Valor total</span>
+                                <span class="c-product__grand">{amountTotalLabel}</span>
+                            </div>
+                        </template>
+                    </lightning-card>
+
+                    <!-- Notes & Attachments -->
+                    <lightning-card title={notesTitle} icon-name="standard:note">
+                        <lightning-button-icon
+                            slot="actions"
+                            icon-name={ui.notesChevron}
+                            variant="bare"
+                            alternative-text="Expandir ou recolher Notas e anexos"
+                            title="Expandir ou recolher"
+                            data-section="notes"
+                            onclick={handleToggleSection}>
+                        </lightning-button-icon>
+                        <template lwc:if={ui.notes}>
+                            <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                                <div class="c-dropzone slds-text-align_center">
+                                    <lightning-button label="Carregar arquivos" icon-name="utility:upload" variant="neutral"></lightning-button>
+                                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">Ou solte arquivos</p>
+                                </div>
+                            </div>
+                        </template>
+                    </lightning-card>
+
+                    <!-- Contact Roles -->
+                    <lightning-card title={contactRolesTitle} icon-name="standard:contact">
+                        <lightning-button-icon
+                            slot="actions"
+                            icon-name={ui.contactRolesChevron}
+                            variant="bare"
+                            alternative-text="Expandir ou recolher Funções de contato"
+                            title="Expandir ou recolher"
+                            data-section="contactRoles"
+                            onclick={handleToggleSection}>
+                        </lightning-button-icon>
+                        <template lwc:if={ui.contactRoles}>
+                            <ul class="slds-p-horizontal_medium slds-p-bottom_small">
+                                <template for:each={contactRoles} for:item="cr">
+                                    <li key={cr.id} class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure">
+                                            <lightning-icon icon-name="standard:contact" size="small" alternative-text="Contato"></lightning-icon>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <p class="slds-truncate"><strong>{cr.name}</strong></p>
+                                            <p class="slds-text-body_small slds-text-color_weak">{cr.role} &bull; {cr.title}</p>
+                                        </div>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                    </lightning-card>
+
+                    <!-- Partners -->
+                    <lightning-card title={partnersTitle} icon-name="standard:partners">
+                        <lightning-button-icon
+                            slot="actions"
+                            icon-name={ui.partnersChevron}
+                            variant="bare"
+                            alternative-text="Expandir ou recolher Parceiros"
+                            title="Expandir ou recolher"
+                            data-section="partners"
+                            onclick={handleToggleSection}>
+                        </lightning-button-icon>
+                        <template lwc:if={ui.partners}>
+                            <p class="slds-p-horizontal_medium slds-p-bottom_medium slds-text-color_weak">
+                                Nenhum parceiro associado.
+                            </p>
+                        </template>
+                    </lightning-card>
+
+                    <!-- Stage History -->
+                    <lightning-card title={stageHistoryTitle} icon-name="standard:opportunity">
+                        <lightning-button-icon
+                            slot="actions"
+                            icon-name={ui.stageHistoryChevron}
+                            variant="bare"
+                            alternative-text="Expandir ou recolher Histórico de estágios"
+                            title="Expandir ou recolher"
+                            data-section="stageHistory"
+                            onclick={handleToggleSection}>
+                        </lightning-button-icon>
+                        <template lwc:if={ui.stageHistory}>
+                            <dl class="c-field-list slds-p-horizontal_medium slds-p-bottom_x-small">
+                                <template for:each={stageHistory} for:item="field">
+                                    <div key={field.key} class="c-field-list__item">
+                                        <dt class="slds-text-title slds-truncate">{field.label}</dt>
+                                        <dd class="slds-truncate" title={field.value}>{field.value}</dd>
+                                    </div>
+                                </template>
+                            </dl>
+                            <div slot="footer" class="slds-text-align_center">
+                                <lightning-button variant="base" label="Ver tudo"></lightning-button>
+                            </div>
+                        </template>
+                    </lightning-card>
+
+                    <!-- Account opportunities (extra related list) -->
+                    <lightning-card title={relatedTitle} icon-name="standard:opportunity">
+                        <lightning-button-icon
+                            slot="actions"
+                            icon-name={ui.relatedChevron}
+                            variant="bare"
+                            alternative-text="Expandir ou recolher Oportunidades da conta"
+                            title="Expandir ou recolher"
+                            data-section="related"
+                            onclick={handleToggleSection}>
+                        </lightning-button-icon>
+                        <template lwc:if={ui.related}>
+                            <template lwc:if={hasRelated}>
+                                <ul class="slds-p-horizontal_medium slds-p-bottom_small">
+                                    <template for:each={related} for:item="rel">
+                                        <li key={rel.id} class="slds-media slds-media_center slds-m-bottom_small">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="standard:opportunity" size="x-small" alternative-text="Oportunidade"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <a href="#" data-id={rel.id} onclick={handleRelatedClick} class="slds-truncate" title={rel.name}>{rel.name}</a>
+                                                <p class="slds-text-body_small slds-text-color_weak">{rel.amountLabel} &bull; {rel.stage}</p>
+                                            </div>
+                                            <div class="slds-media__figure slds-media__figure_reverse">
+                                                <lightning-badge label={rel.stage}></lightning-badge>
+                                            </div>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template lwc:else>
+                                <p class="slds-p-horizontal_medium slds-p-bottom_medium slds-text-color_weak">Nenhuma outra oportunidade nesta conta.</p>
+                            </template>
+                        </template>
+                    </lightning-card>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small slds-p-around_large slds-text-align_center">
+                <p class="slds-text-heading_medium">Oportunidade não encontrada</p>
+                <p class="slds-m-top_small">
+                    <lightning-button label="Voltar às Oportunidades" variant="brand" onclick={handleBackToList}></lightning-button>
+                </p>
+            </div>
+        </template>
+    </div>
+</template>

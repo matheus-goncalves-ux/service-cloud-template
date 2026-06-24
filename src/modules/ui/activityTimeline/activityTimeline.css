@@ -1,0 +1,232 @@
+:host {
+    display: block;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Filter row ("Filtros: ... • settings button")                          */
+/* ---------------------------------------------------------------------- */
+
+.c-timeline__filter-row {
+    margin-block-end: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-timeline__filter-text {
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+    margin: 0;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Action links row (Atualizar • Expandir tudo • Exibir tudo)             */
+/* ---------------------------------------------------------------------- */
+
+.c-timeline__action-links {
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    margin-block-end: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-timeline__action-link {
+    color: var(--slds-g-color-accent-2, #0250d9);
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    font-weight: var(--slds-g-font-weight-6, 600);
+    text-decoration: none;
+}
+
+.c-timeline__action-link:hover,
+.c-timeline__action-link:focus {
+    text-decoration: underline;
+}
+
+.c-timeline__action-sep {
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Section header (e.g. "Outubro • 2025")                                 */
+/* ---------------------------------------------------------------------- */
+
+.c-timeline__section {
+    list-style: none;
+    margin-block: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-timeline__section-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    inline-size: 100%;
+    block-size: var(--slds-g-sizing-9, 2rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+    border: 0;
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+    text-align: start;
+    cursor: pointer;
+}
+
+.c-timeline__section-btn:hover {
+    background: var(--slds-g-color-surface-container-3, #e5e5e5);
+}
+
+.c-timeline__section-icon {
+    transition: transform 0.15s ease-in-out;
+}
+
+.c-timeline__section_collapsed .c-timeline__section-icon {
+    transform: rotate(-90deg);
+}
+
+.c-timeline__section-label {
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    font-weight: var(--slds-g-font-weight-6, 600);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Item — keep the standard activity icon centred within the rail         */
+/* ---------------------------------------------------------------------- */
+
+.c-timeline__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Item header — title row (link + utility icon | date + menu)            */
+/* ---------------------------------------------------------------------- */
+
+.c-timeline__header {
+    min-block-size: var(--slds-g-sizing-8, 1.75rem);
+    padding-inline: var(--slds-g-spacing-1, 0.25rem);
+}
+
+.c-timeline__title-group {
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    min-width: 0;
+}
+
+.c-timeline__title {
+    color: var(--slds-g-color-accent-2, #0250d9);
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    font-weight: var(--slds-g-font-weight-6, 600);
+    text-decoration: none;
+}
+
+.c-timeline__title:hover,
+.c-timeline__title:focus {
+    text-decoration: underline;
+}
+
+.c-timeline__title-icon {
+    --slds-c-icon-color-foreground: var(--slds-g-color-on-surface-2, #2e2e2e);
+    --slds-c-icon-color-foreground-default: var(--slds-g-color-on-surface-2, #2e2e2e);
+}
+
+.c-timeline__meta-group {
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-timeline__date {
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    font-weight: var(--slds-g-font-weight-6, 600);
+    white-space: nowrap;
+}
+
+/* Small bordered chevron menu button on the right of each item */
+.c-timeline__menu {
+    inline-size: var(--slds-g-sizing-6, 1.25rem);
+    block-size: var(--slds-g-sizing-6, 1.25rem);
+    border: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-2, #5c5c5c);
+    border-radius: var(--slds-g-radius-border-circle, 9999px);
+    background: var(--slds-g-color-surface-container-1, #fff);
+}
+
+.c-timeline__menu:hover {
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Actor line — "Você criou um evento com Vicente e 2 outros"             */
+/* ---------------------------------------------------------------------- */
+
+.c-timeline__actor {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    padding-inline: var(--slds-g-spacing-1, 0.25rem);
+    margin: 0;
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+}
+
+.c-timeline__actor-link {
+    color: var(--slds-g-color-accent-2, #0250d9);
+    text-decoration: none;
+}
+
+.c-timeline__actor-link:hover,
+.c-timeline__actor-link:focus {
+    text-decoration: underline;
+}
+
+.c-timeline__actor-text {
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+/* Legacy meta line — kept for back-compat */
+.c-timeline__meta {
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Expanded detail panel                                                  */
+/* ---------------------------------------------------------------------- */
+
+.c-timeline__details {
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+    border: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+    border-radius: var(--slds-g-radius-border-3, 0.75rem);
+    padding: var(--slds-g-spacing-4, 1rem);
+}
+
+.c-timeline__fields {
+    margin-block-end: var(--slds-g-spacing-3, 0.75rem);
+    gap: var(--slds-g-spacing-3, 0.75rem) 0;
+}
+
+.c-timeline__field {
+    margin-block-end: var(--slds-g-spacing-3, 0.75rem);
+}
+
+.c-timeline__field_full {
+    margin-block-end: 0;
+}
+
+.c-timeline__field-label {
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+    margin-block-end: var(--slds-g-spacing-1, 0.25rem);
+}
+
+.c-timeline__field-value {
+    font-size: var(--slds-g-font-scale-base, 0.8125rem);
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+    margin: 0;
+}
+
+/* Link-styled value with dotted popover-trigger underline (Figma) */
+.c-timeline__field-value_link {
+    color: var(--slds-g-color-accent-2, #0250d9);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.c-timeline__description {
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+

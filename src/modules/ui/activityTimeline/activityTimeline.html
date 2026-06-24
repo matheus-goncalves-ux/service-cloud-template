@@ -1,0 +1,163 @@
+<template>
+    <div class="c-timeline">
+        <template lwc:if={filterLabel}>
+            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center c-timeline__filter-row">
+                <p class="c-timeline__filter-text">{filterLabel}</p>
+                <lightning-button-icon
+                    icon-name="utility:settings"
+                    variant="border"
+                    size="small"
+                    alternative-text="Configurar filtros"
+                    title="Configurar filtros"
+                    onclick={handleFilter}>
+                </lightning-button-icon>
+            </div>
+        </template>
+
+        <div class="c-timeline__actions-slot">
+            <slot name="actions"></slot>
+        </div>
+
+        <template lwc:if={showActionLinks}>
+            <div class="slds-grid slds-grid_align-end slds-grid_vertical-align-center c-timeline__action-links">
+                <a href="javascript:void(0);" class="c-timeline__action-link" onclick={handleRefresh}>Atualizar</a>
+                <span class="c-timeline__action-sep" aria-hidden="true">•</span>
+                <a href="javascript:void(0);" class="c-timeline__action-link" onclick={handleToggleAll}>{toggleAllLabel}</a>
+                <span class="c-timeline__action-sep" aria-hidden="true">•</span>
+                <a href="javascript:void(0);" class="c-timeline__action-link" onclick={handleShowAll}>Exibir tudo</a>
+            </div>
+        </template>
+
+        <template lwc:if={hasItems}>
+            <ul class="slds-timeline c-timeline__list">
+                <template for:each={displayItems} for:item="item">
+                    <template lwc:if={item.isSection}>
+                        <li key={item.id} class={item.sectionClass}>
+                            <button
+                                class="slds-button c-timeline__section-btn"
+                                aria-expanded={item.ariaExpanded}
+                                data-id={item.id}
+                                onclick={handleToggleSection}
+                                title={item.toggleTitle}>
+                                <lightning-icon
+                                    icon-name="utility:chevrondown"
+                                    size="xx-small"
+                                    class="c-timeline__section-icon"
+                                    alternative-text={item.toggleTitle}>
+                                </lightning-icon>
+                                <span class="c-timeline__section-label">{item.label}</span>
+                            </button>
+                        </li>
+                    </template>
+                    <template lwc:else>
+                        <li key={item.id}>
+                            <div class={item.rootClass}>
+                                <span class="slds-assistive-text">{item.typeLabel}</span>
+                                <div class="slds-media">
+                                    <div class="slds-media__figure">
+                                        <button
+                                            class="slds-button slds-button_icon slds-timeline__trigger"
+                                            aria-expanded={item.ariaExpanded}
+                                            title={item.toggleTitle}
+                                            data-id={item.id}
+                                            onclick={handleToggle}>
+                                            <lightning-icon
+                                                icon-name="utility:chevrondown"
+                                                size="x-small"
+                                                class="slds-timeline__details-action-icon"
+                                                alternative-text={item.toggleTitle}>
+                                            </lightning-icon>
+                                            <span class="slds-assistive-text">{item.toggleTitle}</span>
+                                        </button>
+                                        <span class="slds-icon_container slds-timeline__icon c-timeline__icon">
+                                            <lightning-icon
+                                                icon-name={item.iconName}
+                                                size="small"
+                                                alternative-text={item.typeLabel}>
+                                            </lightning-icon>
+                                        </span>
+                                    </div>
+                                    <div class="slds-media__body c-timeline__body">
+                                        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center c-timeline__header">
+                                            <div class="slds-grid slds-grid_vertical-align-center c-timeline__title-group">
+                                                <a href="javascript:void(0);" class="c-timeline__title" title={item.subject}>{item.subject}</a>
+                                                <template lwc:if={item.subjectIcon}>
+                                                    <lightning-icon
+                                                        icon-name={item.subjectIcon}
+                                                        size="xx-small"
+                                                        class="c-timeline__title-icon"
+                                                        alternative-text="">
+                                                    </lightning-icon>
+                                                </template>
+                                            </div>
+                                            <div class="slds-grid slds-grid_vertical-align-center c-timeline__meta-group">
+                                                <span class="c-timeline__date">{item.date}</span>
+                                                <button
+                                                    class="slds-button slds-button_icon c-timeline__menu"
+                                                    title="Mais ações"
+                                                    data-id={item.id}
+                                                    onclick={handleMenu}>
+                                                    <lightning-icon
+                                                        icon-name="utility:down"
+                                                        size="xx-small"
+                                                        alternative-text="Mais ações">
+                                                    </lightning-icon>
+                                                    <span class="slds-assistive-text">Mais ações</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <template lwc:if={item.hasActor}>
+                                            <p class="c-timeline__actor">
+                                                <template lwc:if={item.actor}>
+                                                    <a href="javascript:void(0);" class="c-timeline__actor-link">{item.actor}</a>
+                                                </template>
+                                                <template lwc:if={item.actorAction}>
+                                                    <span class="c-timeline__actor-text">{item.actorAction}</span>
+                                                </template>
+                                                <template for:each={item.actorTargets} for:item="target">
+                                                    <a key={target.key} href="javascript:void(0);" class="c-timeline__actor-link">{target.label}</a>
+                                                </template>
+                                                <template lwc:if={item.actorSuffix}>
+                                                    <span class="c-timeline__actor-text">{item.actorSuffix}</span>
+                                                </template>
+                                            </p>
+                                        </template>
+                                        <template lwc:elseif={item.meta}>
+                                            <p class="c-timeline__actor"><span class="c-timeline__actor-text">{item.meta}</span></p>
+                                        </template>
+                                        <div class="slds-timeline__item_details" aria-hidden={item.ariaHidden}>
+                                            <div class="c-timeline__details">
+                                                <template lwc:if={item.hasFields}>
+                                                    <div class="slds-grid slds-wrap c-timeline__fields">
+                                                        <template for:each={item.fields} for:item="field">
+                                                            <div key={field.key} class="slds-size_1-of-2 c-timeline__field">
+                                                                <p class="c-timeline__field-label">{field.label}</p>
+                                                                <p class={field.fieldValueClass}>{field.value}</p>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <template lwc:if={item.description}>
+                                                    <div class="slds-size_1-of-1 c-timeline__field c-timeline__field_full">
+                                                        <p class="c-timeline__field-label">Descrição</p>
+                                                        <p class="c-timeline__field-value c-timeline__description">{item.description}</p>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </template>
+            </ul>
+        </template>
+
+        <template lwc:else>
+            <p class="slds-p-vertical_small slds-text-color_weak slds-text-body_small">
+                Nenhuma atividade registrada.
+            </p>
+        </template>
+    </div>
+</template>

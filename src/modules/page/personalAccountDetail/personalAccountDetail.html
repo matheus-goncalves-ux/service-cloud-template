@@ -1,0 +1,477 @@
+<template>
+    <div class="slds-p-horizontal_medium slds-p-bottom_large">
+        <template lwc:if={hasRecord}>
+
+            <!-- ===== Page header (record-home) ===== -->
+            <div class="slds-page-header slds-page-header_record-home">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <lightning-avatar
+                                    variant="circle"
+                                    size="medium"
+                                    initials={initials}
+                                    fallback-icon-name="standard:person_account"
+                                    alternative-text={fullName}>
+                                </lightning-avatar>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-page-header__name">
+                                    <div class="slds-page-header__name-title">
+                                        <h1>
+                                            <span class="slds-page-header__title slds-truncate"
+                                                title={fullName}>{fullName}</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div class="c-header-badges">
+                                    <span class="c-type-badge">Conta Pessoal</span>
+                                    <span class={statusClass}>{statusLabel}</span>
+                                    <span class={tierClass}>{tierLabel}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-page-header__col-actions">
+                        <div class="slds-page-header__controls">
+                            <div class="slds-page-header__control">
+                                <lightning-button
+                                    label="Seguir"
+                                    icon-name="utility:add"
+                                    icon-position="left"
+                                    variant="neutral">
+                                </lightning-button>
+                            </div>
+                            <div class="slds-page-header__control">
+                                <lightning-button-group>
+                                    <lightning-button label="Editar" variant="neutral"></lightning-button>
+                                    <lightning-button label="Novo Caso" variant="neutral"></lightning-button>
+                                    <lightning-button-menu
+                                        alternative-text="Mais ações"
+                                        variant="border-filled"
+                                        icon-size="medium"
+                                        menu-alignment="right">
+                                        <lightning-menu-item label="Registrar chamada" value="log-call"></lightning-menu-item>
+                                        <lightning-menu-item label="Enviar e-mail" value="email"></lightning-menu-item>
+                                        <lightning-menu-item label="Clonar" value="clone"></lightning-menu-item>
+                                        <lightning-menu-item label="Excluir" value="delete"></lightning-menu-item>
+                                    </lightning-button-menu>
+                                </lightning-button-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail strip -->
+                <div class="slds-page-header__row slds-page-header__row_gutters">
+                    <div class="slds-page-header__col-details">
+                        <ul class="slds-page-header__detail-row">
+                            <template for:each={headerFields} for:item="field">
+                                <li key={field.key} class="slds-page-header__detail-block">
+                                    <p class="slds-text-title slds-truncate slds-m-bottom_xx-small"
+                                        title={field.label}>{field.label}</p>
+                                    <p class="slds-truncate" title={field.value}>{field.value}</p>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Console 2-column body (66% / 33%) ===== -->
+            <div class="slds-grid slds-gutters_small slds-wrap slds-m-top_medium">
+
+                <!-- Left column (8/12 ≈ 66%): Relacionado | Detalhes -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12">
+                    <lightning-card hide-header>
+                        <div class="slds-tabs_default slds-p-bottom_small slds-p-horizontal_medium">
+                            <ul class="slds-tabs_default__nav" role="tablist">
+                                <template for:each={tabs} for:item="tab">
+                                    <li key={tab.value} class={tab.itemClass} title={tab.label} role="presentation">
+                                        <a class="slds-tabs_default__link"
+                                            href="#"
+                                            role="tab"
+                                            tabindex={tab.tabIndex}
+                                            aria-selected={tab.ariaSelected}
+                                            data-tab={tab.value}
+                                            onclick={handleTabSelect}>{tab.label}</a>
+                                    </li>
+                                </template>
+                            </ul>
+
+                            <!-- Tab: Relacionado -->
+                            <div class={relatedContentClass} role="tabpanel">
+                                <div class="slds-p-vertical_medium c-related-stack">
+
+                                    <!-- Nested card: Oportunidades -->
+                                    <article class="slds-card slds-card_boundary">
+                                        <div class="slds-card__header slds-grid">
+                                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                                <div class="slds-media__figure">
+                                                    <lightning-icon icon-name="standard:opportunity" size="small" alternative-text="Oportunidades"></lightning-icon>
+                                                </div>
+                                                <div class="slds-media__body">
+                                                    <h2 class="slds-card__header-title">
+                                                        <span class="slds-truncate" title={opportunitiesTitle}>{opportunitiesTitle}</span>
+                                                    </h2>
+                                                </div>
+                                            </header>
+                                            <div class="slds-no-flex">
+                                                <lightning-button label="Novo" variant="outline-brand"></lightning-button>
+                                            </div>
+                                        </div>
+                                        <div class="slds-card__body">
+                                            <template lwc:if={hasOpportunities}>
+                                                <div class="slds-grid slds-wrap slds-p-left_medium slds-p-bottom_small">
+                                                    <template for:each={opportunities} for:item="opp">
+                                                        <div key={opp.id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                                            <div class="slds-tile">
+                                                                <p class="slds-tile__title slds-truncate">
+                                                                    <a href="#" onclick={handleNoop}>{opp.name}</a>
+                                                                </p>
+                                                                <div class="slds-tile__detail">
+                                                                    <dl class="slds-list_horizontal slds-wrap">
+                                                                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Fase:</dt>
+                                                                        <dd class="slds-item_detail slds-truncate">{opp.stageLabel}</dd>
+                                                                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Valor:</dt>
+                                                                        <dd class="slds-item_detail slds-truncate">{opp.amountLabel}</dd>
+                                                                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Fechamento:</dt>
+                                                                        <dd class="slds-item_detail slds-truncate">{opp.closeDate}</dd>
+                                                                    </dl>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <template lwc:if={hasOpportunities}>
+                                            <footer class="slds-card__footer">
+                                                <a href="#" onclick={handleNoop}>Ver todas as oportunidades</a>
+                                            </footer>
+                                        </template>
+                                    </article>
+
+                                    <!-- Nested card: Casos -->
+                                    <article class="slds-card slds-card_boundary">
+                                        <div class="slds-card__header slds-grid">
+                                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                                <div class="slds-media__figure">
+                                                    <lightning-icon icon-name="standard:case" size="small" alternative-text="Casos"></lightning-icon>
+                                                </div>
+                                                <div class="slds-media__body">
+                                                    <h2 class="slds-card__header-title">
+                                                        <span class="slds-truncate" title={casesTitle}>{casesTitle}</span>
+                                                    </h2>
+                                                </div>
+                                            </header>
+                                            <div class="slds-no-flex">
+                                                <lightning-button label="Novo" variant="outline-brand"></lightning-button>
+                                            </div>
+                                        </div>
+                                        <div class="slds-card__body">
+                                            <template lwc:if={hasCases}>
+                                                <div class="slds-grid slds-wrap slds-p-left_medium slds-p-bottom_small">
+                                                    <template for:each={cases} for:item="c">
+                                                        <div key={c.id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                                                            <div class="slds-tile">
+                                                                <p class="slds-tile__title slds-truncate">
+                                                                    <a href="#" onclick={handleNoop}>{c.caseNumber}</a>
+                                                                </p>
+                                                                <div class="slds-tile__detail">
+                                                                    <dl class="slds-list_horizontal slds-wrap">
+                                                                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Assunto:</dt>
+                                                                        <dd class="slds-item_detail slds-truncate">{c.subject}</dd>
+                                                                        <dt class="slds-item_label slds-text-color_weak slds-truncate">Status:</dt>
+                                                                        <dd class="slds-item_detail slds-truncate">{c.status}</dd>
+                                                                        <template lwc:if={c.slaOverdue}>
+                                                                            <dt class="slds-item_label slds-text-color_weak slds-truncate">SLA:</dt>
+                                                                            <dd class="slds-item_detail slds-truncate c-sla-overdue">{c.slaText}</dd>
+                                                                        </template>
+                                                                    </dl>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <template lwc:if={hasCases}>
+                                            <footer class="slds-card__footer">
+                                                <a href="#" onclick={handleNoop}>Ver todos os casos</a>
+                                            </footer>
+                                        </template>
+                                    </article>
+
+                                </div>
+                            </div>
+
+                            <!-- Tab: Detalhes -->
+                            <div class={detailsContentClass} role="tabpanel">
+                                <div class="slds-p-vertical_x-small">
+                                    <template for:each={detailSections} for:item="section">
+                                        <div key={section.key} class="c-section-item">
+                                            <button
+                                                aria-expanded={section.open}
+                                                class="c-section-header"
+                                                data-section={section.key}
+                                                onclick={handleSection}>
+                                                <lightning-icon
+                                                    icon-name={section.icon}
+                                                    size="xx-small"
+                                                    alternative-text="Alternar seção">
+                                                </lightning-icon>
+                                                <span class="slds-truncate">{section.label}</span>
+                                            </button>
+                                            <template lwc:if={section.open}>
+                                                <div class="c-field-grid slds-p-horizontal_small slds-p-bottom_small">
+                                                    <template for:each={section.fields} for:item="field">
+                                                        <div key={field.key} class="c-field-grid__item">
+                                                            <lightning-input
+                                                                label={field.label}
+                                                                value={field.value}
+                                                                read-only>
+                                                            </lightning-input>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </div>
+                    </lightning-card>
+                </div>
+
+                <!-- Right column (4/12 ≈ 33%): Atividade | Chatter -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12">
+                    <lightning-card hide-header>
+                        <div class="slds-tabs_default slds-p-bottom_small slds-p-horizontal_medium">
+                            <ul class="slds-tabs_default__nav" role="tablist">
+                                <template for:each={sideTabs} for:item="tab">
+                                    <li key={tab.value} class={tab.itemClass} title={tab.label} role="presentation">
+                                        <a class="slds-tabs_default__link"
+                                            href="#"
+                                            role="tab"
+                                            tabindex={tab.tabIndex}
+                                            aria-selected={tab.ariaSelected}
+                                            data-tab={tab.value}
+                                            onclick={handleSideTabSelect}>{tab.label}</a>
+                                    </li>
+                                </template>
+                            </ul>
+
+                            <!-- Tab: Atividade -->
+                            <div class={activityContentClass} role="tabpanel">
+                                <div class="slds-p-vertical_medium">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium c-activity-buttons">
+                                        <div class="c-activity-pill" role="group" aria-label="Nova tarefa">
+                                            <button class="c-activity-pill__main" title="Nova tarefa">
+                                                <span class="c-activity-pill__icon c-activity-pill__icon_task">
+                                                    <lightning-icon icon-name="utility:task" size="xx-small" variant="inverse" alternative-text="Nova tarefa"></lightning-icon>
+                                                </span>
+                                            </button>
+                                            <button class="c-activity-pill__chevron" title="Mais opções de tarefa">
+                                                <lightning-icon icon-name="utility:down" size="xx-small" alternative-text="Mais opções"></lightning-icon>
+                                            </button>
+                                        </div>
+                                        <div class="c-activity-pill" role="group" aria-label="Novo evento">
+                                            <button class="c-activity-pill__main" title="Novo evento">
+                                                <span class="c-activity-pill__icon c-activity-pill__icon_event">
+                                                    <lightning-icon icon-name="utility:event" size="xx-small" variant="inverse" alternative-text="Novo evento"></lightning-icon>
+                                                </span>
+                                            </button>
+                                            <button class="c-activity-pill__chevron" title="Mais opções de evento">
+                                                <lightning-icon icon-name="utility:down" size="xx-small" alternative-text="Mais opções"></lightning-icon>
+                                            </button>
+                                        </div>
+                                        <div class="c-activity-pill" role="group" aria-label="Registrar chamada">
+                                            <button class="c-activity-pill__main" title="Registrar chamada">
+                                                <span class="c-activity-pill__icon c-activity-pill__icon_call">
+                                                    <lightning-icon icon-name="utility:log_a_call" size="xx-small" variant="inverse" alternative-text="Registrar chamada"></lightning-icon>
+                                                </span>
+                                            </button>
+                                            <button class="c-activity-pill__chevron" title="Mais opções de chamada">
+                                                <lightning-icon icon-name="utility:down" size="xx-small" alternative-text="Mais opções"></lightning-icon>
+                                            </button>
+                                        </div>
+                                        <div class="c-activity-pill" role="group" aria-label="Enviar e-mail">
+                                            <button class="c-activity-pill__main" title="Enviar e-mail">
+                                                <span class="c-activity-pill__icon c-activity-pill__icon_email">
+                                                    <lightning-icon icon-name="utility:email" size="xx-small" variant="inverse" alternative-text="Enviar e-mail"></lightning-icon>
+                                                </span>
+                                            </button>
+                                            <button class="c-activity-pill__chevron" title="Mais opções de e-mail">
+                                                <lightning-icon icon-name="utility:down" size="xx-small" alternative-text="Mais opções"></lightning-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <ui-activity-timeline
+                                        filter-label="Filtros: Todo o período • Todas as atividades • Todos os tipos"
+                                        items={activityItems}
+                                        show-action-links>
+                                    </ui-activity-timeline>
+                                </div>
+                            </div>
+
+                            <!-- Tab: Chatter -->
+                            <div class={chatterContentClass} role="tabpanel">
+                                <div class="slds-p-vertical_medium">
+
+                                    <!-- Compositor -->
+                                    <div class="slds-tabs_scoped c-feed-composer-card slds-m-bottom_medium">
+                                        <ul class="slds-tabs_scoped__nav c-feed-tab-nav" role="tablist">
+                                            <template for:each={composerTabs} for:item="ct">
+                                                <li key={ct.value} class={ct.itemClass} role="presentation">
+                                                    <a class="slds-tabs_scoped__link" href="#" role="tab"
+                                                        data-composer={ct.value}
+                                                        aria-selected={ct.ariaSelected}
+                                                        tabindex={ct.tabIndex}
+                                                        onclick={handleComposerTab}>{ct.label}</a>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                        <div class="slds-tabs_scoped__content slds-show c-feed-tab-content">
+                                            <div class="c-feed-composer">
+                                                <div class="c-feed-composer__input">
+                                                    <lightning-input
+                                                        type="text"
+                                                        label="Compartilhar atualização"
+                                                        variant="label-hidden"
+                                                        placeholder="Compartilhe uma atualização..."
+                                                        value={feedComment}
+                                                        onchange={handleFeedChange}>
+                                                    </lightning-input>
+                                                </div>
+                                                <lightning-button
+                                                    label="Compartilhar"
+                                                    variant="brand"
+                                                    onclick={handleFeedShare}>
+                                                </lightning-button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Barra de ações -->
+                                    <div class="c-feed-toolbar slds-m-bottom_small">
+                                        <div class="c-feed-toolbar__left">
+                                            <lightning-button-menu
+                                                variant="bare"
+                                                menu-alignment="left"
+                                                label={feedSortLabel}
+                                                alternative-text="Ordenar feed"
+                                                onselect={handleFeedSort}>
+                                                <template for:each={feedSortOptions} for:item="opt">
+                                                    <lightning-menu-item key={opt.value} value={opt.value} label={opt.label}></lightning-menu-item>
+                                                </template>
+                                            </lightning-button-menu>
+                                        </div>
+                                        <div class="c-feed-toolbar__right">
+                                            <div class="c-feed-search">
+                                                <lightning-input
+                                                    type="search"
+                                                    label="Pesquisar no feed"
+                                                    variant="label-hidden"
+                                                    placeholder="Pesquisar no feed..."
+                                                    value={feedSearch}
+                                                    onchange={handleFeedSearch}>
+                                                </lightning-input>
+                                            </div>
+                                            <lightning-button-icon
+                                                icon-name="utility:refresh"
+                                                variant="border-filled"
+                                                alternative-text="Atualizar"
+                                                title="Atualizar">
+                                            </lightning-button-icon>
+                                        </div>
+                                    </div>
+
+                                    <!-- Filtros do feed -->
+                                    <div class="slds-tabs_default c-feed-filters">
+                                        <ul class="slds-tabs_default__nav" role="tablist">
+                                            <template for:each={feedFilters} for:item="f">
+                                                <li key={f.value} class={f.itemClass} title={f.label} role="presentation">
+                                                    <a class="slds-tabs_default__link" href="#" role="tab"
+                                                        data-filter={f.value}
+                                                        aria-selected={f.ariaSelected}
+                                                        tabindex={f.tabIndex}
+                                                        onclick={handleFeedFilter}>{f.label}</a>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Lista do feed -->
+                                    <template lwc:if={hasFeedPosts}>
+                                        <div class="slds-feed c-feed-container">
+                                            <ul class="slds-feed__list c-feed-list">
+                                                <template for:each={feedPosts} for:item="post">
+                                                    <li key={post.id} class="slds-feed__item c-post">
+                                                        <article class="slds-post">
+                                                            <header class="slds-post__header slds-media">
+                                                                <div class="slds-media__figure c-post__toggle">
+                                                                    <lightning-icon icon-name="utility:chevrondown" size="xx-small" alternative-text="Recolher publicação"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-avatar variant="circle" size="small" initials={post.initials} fallback-icon-name="standard:user" alternative-text={post.author}></lightning-avatar>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <div class="slds-grid slds-grid_align-spread">
+                                                                        <a href="#" class="c-post__author" onclick={handleNoop}>{post.author}</a>
+                                                                        <span class="c-post__date">{post.date}</span>
+                                                                    </div>
+                                                                    <p class="c-post__recipient">
+                                                                        <span class="c-post__recipient-icon">
+                                                                            <lightning-icon icon-name="utility:world" size="xx-small" variant="inverse" alternative-text="Visível para todos"></lightning-icon>
+                                                                        </span>
+                                                                        {post.recipient}
+                                                                    </p>
+                                                                    <div class="slds-post__content slds-text-longform c-post__content">
+                                                                        <p>{post.body}</p>
+                                                                    </div>
+                                                                    <div class="c-post__footer">
+                                                                        <a href="#" class="c-post__action" onclick={handleNoop}>
+                                                                            <lightning-icon icon-name="utility:comments" size="xx-small" class="slds-m-right_xx-small" alternative-text="Comentar"></lightning-icon>
+                                                                            Comentar
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </header>
+                                                        </article>
+                                                    </li>
+                                                </template>
+                                            </ul>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="slds-p-vertical_small slds-text-color_weak slds-text-body_small">Nenhuma publicação ainda.</p>
+                                    </template>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </lightning-card>
+                </div>
+
+            </div>
+        </template>
+
+        <!-- Record not found -->
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small slds-p-around_large slds-text-align_center">
+                <p class="slds-text-heading_medium">Conta pessoal não encontrada</p>
+                <p class="slds-m-top_small">
+                    <lightning-button
+                        label="Voltar para Contas Pessoais"
+                        variant="brand"
+                        onclick={handleBackToList}>
+                    </lightning-button>
+                </p>
+            </div>
+        </template>
+    </div>
+</template>

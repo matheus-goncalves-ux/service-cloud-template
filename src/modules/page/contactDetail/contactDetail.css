@@ -1,13 +1,247 @@
-lightning-card {
-    --slds-c-card-body-spacing-inline: var(--slds-g-spacing-var-inline-4);
+/* page-contact-detail — Sales console contact record page.
+   Mirrors the page-account-detail 2-column console pattern (66% / 33%).
+   Helper classes are redefined locally (LWC scoped CSS under synthetic shadow). */
+
+/* ---------------------------------------------------------------------------
+   Activity quick-action pill — split button (icon + chevron) in one pill.
+   32px tall, white background, coloured action icon left, chevron right.
+   --------------------------------------------------------------------------- */
+
+.c-activity-buttons {
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    flex-wrap: wrap;
 }
 
-.c-contact-details-grid {
+.c-activity-pill {
+    display: inline-flex;
+    align-items: center;
+    block-size: var(--slds-g-sizing-9, 2rem);
+    border: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-2, #5c5c5c);
+    border-radius: var(--slds-g-radius-border-pill, 15rem);
+    background: var(--slds-g-color-surface-container-1, #fff);
+    overflow: hidden;
+}
+
+.c-activity-pill__main,
+.c-activity-pill__chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    block-size: 100%;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+}
+
+.c-activity-pill__main {
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+    border-inline-end: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-2, #5c5c5c);
+}
+
+.c-activity-pill__chevron {
+    padding-inline: var(--slds-g-spacing-1, 0.25rem);
+}
+
+/* 24px coloured action circle built in our own scope.
+   utility icons with variant="inverse" render the glyph in white.
+   Colours match the SLDS action icon palette. */
+.c-activity-pill__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    inline-size: var(--slds-g-sizing-7, 1.5rem);
+    block-size: var(--slds-g-sizing-7, 1.5rem);
+    border-radius: var(--slds-g-radius-border-circle, 9999px);
+}
+
+.c-activity-pill__icon_task  { background: var(--slds-g-color-palette-green-65, #3ba755); }
+.c-activity-pill__icon_event { background: var(--slds-g-color-palette-pink-60, #ff538a); }
+.c-activity-pill__icon_call  { background: var(--slds-g-color-palette-teal-60, #06a59a); }
+.c-activity-pill__icon_email { background: var(--slds-g-color-palette-cloud-blue-40, #107cad); }
+
+.c-activity-pill__main:hover,
+.c-activity-pill__chevron:hover {
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+}
+
+/* ---------------------------------------------------------------------------
+   Priority dot (Cases related list)
+   --------------------------------------------------------------------------- */
+
+.c-priority {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-1, 0.25rem);
+    white-space: nowrap;
+}
+
+.c-priority__dot {
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: var(--slds-g-radius-border-circle, 50%);
+    background: var(--slds-g-color-on-surface-2, #2e2e2e);
+}
+
+.c-priority_high .c-priority__dot {
+    background: var(--slds-g-color-error-1, #b60554);
+}
+
+.c-priority_medium .c-priority__dot {
+    background: var(--slds-g-color-warning-1, #8c4b02);
+}
+
+.c-priority_low .c-priority__dot {
+    background: var(--slds-g-color-success-1, #056764);
+}
+
+/* ---------------------------------------------------------------------------
+   Opportunity stage badge (Related tab)
+   --------------------------------------------------------------------------- */
+
+.c-opp-stage {
+    display: inline-flex;
+    align-items: center;
+    padding-block: var(--slds-g-spacing-1, 0.25rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    line-height: var(--slds-g-font-lineheight-1, 1.25);
+    white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Details tab — 2-column read-only field grid + collapsible sections
+   --------------------------------------------------------------------------- */
+
+.c-field-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--slds-g-spacing-3, 0.75rem);
 }
 
-.c-contact-details-grid__full-width {
-    grid-column: 1 / -1;
+.c-field-grid__item {
+    min-inline-size: 0;
+}
+
+.c-section-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+    padding-block: 0;
+    /* 32px height — no hook exists for this exact size; intentional value */
+    min-block-size: 2rem;
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+    border: none;
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    color: var(--slds-g-color-on-surface-2, #2e2e2e);
+    font-size: var(--slds-g-font-scale-2, 1rem);
+    font-family: inherit;
+    cursor: pointer;
+    text-align: start;
+}
+
+.c-section-header:hover {
+    background: var(--slds-g-color-surface-container-2, #f3f3f3);
+    filter: brightness(0.96);
+}
+
+/* ---------------------------------------------------------------------------
+   Related tab — vertical stack of nested cards
+   --------------------------------------------------------------------------- */
+
+.c-related-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slds-g-spacing-3, 0.75rem);
+}
+
+/* ---------------------------------------------------------------------------
+   File / notes drop zone (empty Notes & Attachments card)
+   --------------------------------------------------------------------------- */
+
+.c-file-drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--slds-g-sizing-border-1, 1px) dashed var(--slds-g-color-border-2, #5c5c5c);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    padding-block: var(--slds-g-spacing-3, 0.75rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+}
+
+/* ---------------------------------------------------------------------------
+   Chatter feed (right column) — composer + posts
+   --------------------------------------------------------------------------- */
+
+.c-feed-tab-content {
+    border-end-start-radius: var(--slds-g-radius-border-2, 0.5rem);
+    border-end-end-radius: var(--slds-g-radius-border-2, 0.5rem);
+}
+
+.c-feed-tab-nav {
+    border-start-start-radius: var(--slds-g-radius-border-2, 0.5rem);
+    border-start-end-radius: var(--slds-g-radius-border-2, 0.5rem);
+}
+
+.c-feed-composer {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    padding: var(--slds-g-spacing-3, 0.75rem);
+}
+
+.c-feed-composer__input {
+    flex: 1 0 0;
+    min-inline-size: 0;
+}
+
+.c-feed-container {
+    max-inline-size: none;
+    margin-inline: 0;
+}
+
+.c-feed-list {
+    inline-size: 100%;
+}
+
+.c-post {
+    inline-size: 100%;
+    border-block-end: var(--slds-g-sizing-border-1, 1px) solid
+        var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-post__author {
+    font-weight: var(--slds-g-font-weight-7, 700);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+    text-decoration: none;
+}
+
+.c-post__author:hover {
+    text-decoration: underline;
+}
+
+.c-post__date {
+    color: var(--slds-g-color-on-surface-3, #03234d);
+    font-size: var(--slds-g-font-size-base, 0.8125rem);
+    white-space: nowrap;
+}
+
+.c-post__recipient {
+    margin-block-start: var(--slds-g-spacing-1, 0.25rem);
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+    font-size: var(--slds-g-font-size-base, 0.8125rem);
+}
+
+.c-post__content {
+    margin-block-start: var(--slds-g-spacing-2, 0.5rem);
+    color: var(--slds-g-color-on-surface-3, #03234d);
 }

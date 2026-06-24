@@ -1,0 +1,81 @@
+/* page-opportunity-detail — standard Lightning record home.
+   Two-column layout: main region (Activity / Details / Chatter tabs) plus a
+   Related sidebar of collapsible related-list cards. Helper classes are
+   redefined here because component CSS is scoped per LWC under synthetic
+   shadow DOM. */
+
+/* Compact label/value list used in the Stage History card */
+.c-field-list {
+    display: grid;
+    gap: var(--slds-g-spacing-3, 0.75rem);
+}
+
+.c-field-list__item dt {
+    margin-block-end: var(--slds-g-spacing-1, 0.25rem);
+}
+
+.c-field-list__item dd {
+    margin-inline-start: 0;
+    color: var(--slds-g-color-on-surface-3, #181818);
+}
+
+/* Vertical stack for the related-list cards in the sidebar */
+.c-card-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slds-g-spacing-3, 0.75rem);
+}
+
+/* Activity composer action bar — wraps the call/task/event/email buttons */
+.c-activity-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+/* Notes & Attachments upload dropzone */
+.c-dropzone {
+    padding-block: var(--slds-g-spacing-5, 1.5rem);
+    padding-inline: var(--slds-g-spacing-4, 1rem);
+    border: var(--slds-g-sizing-border-1, 1px) dashed var(--slds-g-color-border-2, #c9c9c9);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    background: var(--slds-g-color-surface-2, #f3f3f3);
+}
+
+/* --- Products related list --- */
+
+.c-product {
+    padding-block: var(--slds-g-spacing-2, 0.5rem);
+    border-block-end: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #e5e5e5);
+}
+
+.c-product:last-child {
+    border-block-end: none;
+}
+
+.c-product__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    font-weight: var(--slds-g-font-weight-6, 600);
+    color: var(--slds-g-color-on-surface-1, #181818);
+}
+
+.c-product__total {
+    flex: 0 0 auto;
+}
+
+.c-product__footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    inline-size: 100%;
+    font-weight: var(--slds-g-font-weight-7, 700);
+    color: var(--slds-g-color-on-surface-1, #181818);
+}
+
+.c-product__grand {
+    color: var(--slds-g-color-success-1, #056764);
+}

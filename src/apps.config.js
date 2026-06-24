@@ -23,16 +23,16 @@ export const apps = [
     label: 'Standard App',
     variant: 'standard',
     pathPrefix: '/app',
-    defaultPath: '/app',
-    pages: ['home', 'icons', 'contacts'],
+    defaultPath: '/app/seller-home',
+    pages: ['seller-home', 'home', 'icons', 'contacts', 'cases', 'opportunities'],
   },
   {
     id: 'console',
-    label: 'Console App',
+    label: 'Service Console',
     variant: 'console',
     pathPrefix: '/console',
-    defaultPath: '/console',
-    pages: ['home', 'icons', 'contacts'],
+    defaultPath: '/console/service-home',
+    pages: ['service-home', 'cases', 'accounts', 'contacts'],
   },
   {
     id: 'builder',
@@ -44,7 +44,7 @@ export const apps = [
   },
 ];
 
-export const DEFAULT_APP_ID = 'standard';
+export const DEFAULT_APP_ID = 'console';
 
 export function getAppById(id) {
   return apps.find((a) => a.id === id) ?? null;

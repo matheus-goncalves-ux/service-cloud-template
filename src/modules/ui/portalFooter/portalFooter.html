@@ -1,0 +1,20 @@
+<template>
+    <footer class="c-portal-footer" role="contentinfo">
+        <div class="c-portal-footer__inner">
+            <div class="c-portal-footer__brand">
+                <span class="c-portal-footer__wordmark">{wordmark}</span>
+                <span class="c-portal-footer__name">{portalName}</span>
+            </div>
+
+            <ul class="c-portal-footer__links">
+                <template for:each={links} for:item="link">
+                    <li key={link.id} class="c-portal-footer__link-item">
+                        <a href="#" class="c-portal-footer__link">{link.label}</a>
+                    </li>
+                </template>
+            </ul>
+
+            <p class="c-portal-footer__legal">© {year} {portalName} • Portal de demonstração</p>
+        </div>
+    </footer>
+</template>

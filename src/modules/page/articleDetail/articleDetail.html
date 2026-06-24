@@ -1,0 +1,152 @@
+<template>
+    <div class={portalClass}>
+        <ui-portal-header
+            brand={brand}
+            brands={brands}
+            user-name={user.name}
+            user-initials={user.initials}
+            onsearch={handleSearch}
+            onbrandchange={handleBrandChange}
+            onhome={handleHome}
+            onexit={handleExit}>
+        </ui-portal-header>
+
+        <main class="c-portal__main">
+            <div class="c-article">
+                <template lwc:if={hasArticle}>
+                    <!-- Breadcrumb -->
+                    <nav class="c-breadcrumb" aria-label="Trilha de navegação">
+                        <ol class="c-breadcrumb__list">
+                            <li class="c-breadcrumb__item">
+                                <a href="#" class="c-breadcrumb__link" onclick={handleBackToHelp}>Central de Ajuda</a>
+                                <lightning-icon class="c-breadcrumb__sep" icon-name="utility:chevronright" size="xx-small" alternative-text=""></lightning-icon>
+                            </li>
+                            <li class="c-breadcrumb__item">
+                                <a href="#" class="c-breadcrumb__link" onclick={handleBackToHelp}>{breadcrumbTopic}</a>
+                                <lightning-icon class="c-breadcrumb__sep" icon-name="utility:chevronright" size="xx-small" alternative-text=""></lightning-icon>
+                            </li>
+                            <li class="c-breadcrumb__item">
+                                <span class="c-breadcrumb__current" aria-current="page">{article.title}</span>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <article class="c-article__body">
+                        <header class="c-article__header">
+                            <p class="c-article__topic">{article.topicLabel}</p>
+                            <h1 class="c-article__title">{article.title}</h1>
+                            <p class="c-article__meta">{articleMeta}</p>
+                            <p class="c-article__stats">{statsText}</p>
+                            <p class="c-article__summary">{article.summary}</p>
+
+                            <ul class="c-tags">
+                                <template for:each={tags} for:item="tag">
+                                    <li key={tag} class="c-tag">{tag}</li>
+                                </template>
+                            </ul>
+                        </header>
+
+                        <div class="c-article__content">
+                            <template for:each={bodyBlocks} for:item="block">
+                                <div key={block.key}>
+                                    <template lwc:if={block.isHeading}>
+                                        <h2 class="c-article__heading">{block.text}</h2>
+                                    </template>
+                                    <template lwc:if={block.isParagraph}>
+                                        <p class="c-article__paragraph">{block.text}</p>
+                                    </template>
+                                    <template lwc:if={block.isList}>
+                                        <template lwc:if={block.isOrdered}>
+                                            <ol class="c-article__list c-article__list_ordered">
+                                                <template for:each={block.items} for:item="item">
+                                                    <li key={item.key} class="c-article__list-item">{item.text}</li>
+                                                </template>
+                                            </ol>
+                                        </template>
+                                        <template lwc:else>
+                                            <ul class="c-article__list">
+                                                <template for:each={block.items} for:item="item">
+                                                    <li key={item.key} class="c-article__list-item">{item.text}</li>
+                                                </template>
+                                            </ul>
+                                        </template>
+                                    </template>
+                                    <template lwc:if={block.isCallout}>
+                                        <div class="c-callout" role="note">
+                                            <lightning-icon class="c-callout__icon" icon-name="utility:success" size="x-small" alternative-text="Atenção"></lightning-icon>
+                                            <p class="c-callout__text">{block.text}</p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Was this helpful? -->
+                        <div class="c-feedback">
+                            <template lwc:if={feedbackGiven}>
+                                <div class="c-feedback__thanks">
+                                    <lightning-icon icon-name="utility:success" size="small" alternative-text=""></lightning-icon>
+                                    <span>{feedbackMessage}</span>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <span class="c-feedback__label">Este artigo foi útil?</span>
+                                <div class="c-feedback__actions">
+                                    <lightning-button
+                                        label="Sim"
+                                        icon-name="utility:like"
+                                        variant={helpfulYesVariant}
+                                        onclick={handleHelpfulYes}>
+                                    </lightning-button>
+                                    <lightning-button
+                                        label="Não"
+                                        icon-name="utility:dislike"
+                                        variant={helpfulNoVariant}
+                                        onclick={handleHelpfulNo}>
+                                    </lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                    </article>
+
+                    <!-- Related -->
+                    <section class="c-section" aria-label="Artigos relacionados">
+                        <div class="c-section__head">
+                            <h2 class="c-section__title">Artigos relacionados</h2>
+                        </div>
+                        <ul class="c-article-list">
+                            <template for:each={relatedArticles} for:item="rel">
+                                <li key={rel.id} class="c-article-list__item">
+                                    <button
+                                        type="button"
+                                        class="c-article-row"
+                                        data-id={rel.id}
+                                        onclick={handleRelatedOpen}>
+                                        <span class="c-article-row__icon">
+                                            <lightning-icon icon-name="standard:knowledge" size="small" alternative-text="Artigo"></lightning-icon>
+                                        </span>
+                                        <span class="c-article-row__body">
+                                            <span class="c-article-row__title">{rel.title}</span>
+                                            <span class="c-article-row__meta">{rel.meta}</span>
+                                        </span>
+                                        <lightning-icon class="c-article-row__chevron" icon-name="utility:chevronright" size="x-small" alternative-text=""></lightning-icon>
+                                    </button>
+                                </li>
+                            </template>
+                        </ul>
+                    </section>
+                </template>
+
+                <template lwc:else>
+                    <div class="c-empty">
+                        <lightning-icon icon-name="standard:knowledge" size="small" alternative-text=""></lightning-icon>
+                        <p>Artigo não encontrado.</p>
+                        <lightning-button label="Voltar à Central de Ajuda" variant="brand" onclick={handleBackToHelp}></lightning-button>
+                    </div>
+                </template>
+            </div>
+        </main>
+
+        <ui-portal-footer brand={brand}></ui-portal-footer>
+    </div>
+</template>

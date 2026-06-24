@@ -1,0 +1,180 @@
+/* page-service-home — Service Cloud "Agent Home" dashboard.
+   Greeting + four hero KPI cards (Backlog, SLA, Tempo médio de resolução,
+   CSAT) each with a metric ring and colour-coded badge legend, plus a second
+   row with FCR, overdue-SLA empty state and recent cases.
+   Helper classes are duplicated from page/sellerHome intentionally — each LWC
+   has a scoped CSS file under synthetic shadow DOM, so shared helper classes
+   must be redefined per component. */
+
+:host {
+    display: block;
+    background: var(--slds-g-color-surface-2, #f3f3f3);
+    min-block-size: 100%;
+}
+
+/* --- Page header --- */
+.c-service-home__title {
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+.c-service-home__subtitle {
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+/* --- Cards fill their grid cell height --- */
+.c-kpi,
+.c-tile {
+    block-size: 100%;
+}
+
+.c-kpi__title,
+.c-kpi__desc {
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+.c-kpi__desc {
+    min-block-size: 2.5rem;
+}
+
+/* Ring + legend sit side by side */
+.c-kpi__body {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-4, 1rem);
+}
+
+/* --- Metric ring --- */
+.c-ring {
+    flex: 0 0 auto;
+    inline-size: 6.5rem;
+    block-size: 6.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: var(--slds-g-radius-border-circle, 50%);
+    border: var(--slds-g-sizing-3, 0.5rem) solid var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-ring_neutral {
+    border-color: var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-ring_success {
+    border-color: var(--slds-g-color-on-success-1, #056764);
+}
+
+.c-ring_info {
+    border-color: var(--slds-g-color-on-info-1, #05628a);
+}
+
+.c-ring_error {
+    border-color: var(--slds-g-color-error-1, #b60554);
+}
+
+.c-ring__primary {
+    font-size: var(--slds-g-font-scale-2, 1rem);
+    font-weight: var(--slds-g-font-weight-4, 400);
+    line-height: var(--slds-g-font-lineheight-1, 1.25);
+    color: var(--slds-g-color-on-surface-3, #03234d);
+}
+
+.c-ring__label {
+    font-size: var(--slds-g-font-scale-neg-2, 0.625rem);
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+/* --- Activity / metric legend --- */
+.c-legend {
+    display: flex;
+    flex-direction: column;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+    min-inline-size: 0;
+}
+
+.c-legend__item {
+    display: flex;
+    align-items: center;
+    gap: var(--slds-g-spacing-2, 0.5rem);
+}
+
+.c-dot {
+    flex: 0 0 auto;
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    border-radius: var(--slds-g-radius-border-circle, 50%);
+}
+
+.c-dot_success {
+    background: var(--slds-g-color-on-success-1, #056764);
+}
+
+.c-dot_info {
+    background: var(--slds-g-color-on-info-1, #05628a);
+}
+
+.c-dot_error {
+    background: var(--slds-g-color-on-error-1, #ba0517);
+}
+
+/* Coloured pill badge */
+.c-badge {
+    display: inline-flex;
+    align-items: center;
+    padding-block: var(--slds-g-spacing-1, 0.25rem);
+    padding-inline: var(--slds-g-spacing-2, 0.5rem);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+    font-size: var(--slds-g-font-scale-neg-1, 0.75rem);
+    line-height: var(--slds-g-font-lineheight-1, 1.25);
+    white-space: nowrap;
+}
+
+.c-badge_success {
+    background: var(--slds-g-color-success-container-1, #acf3e4);
+    color: var(--slds-g-color-on-success-1, #056764);
+}
+
+.c-badge_info {
+    background: var(--slds-g-color-info-container-1, #cfe9fe);
+    color: var(--slds-g-color-on-info-1, #05628a);
+}
+
+.c-badge_error {
+    background: var(--slds-g-color-error-container-1, #feded8);
+    color: var(--slds-g-color-on-error-1, #ba0517);
+}
+
+/* --- Empty states use the SLDS illustration blueprint --- */
+.c-empty {
+    color: var(--slds-g-color-on-surface-1, #5c5c5c);
+}
+
+.c-empty__img {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 15rem;
+    block-size: auto;
+    margin-inline: auto;
+}
+
+/* --- Recent / overdue cases list --- */
+.c-recent {
+    display: flex;
+    flex-direction: column;
+}
+
+.c-recent__item {
+    display: flex;
+    align-items: center;
+    padding-block: var(--slds-g-spacing-2, 0.5rem);
+    border-block-end: var(--slds-g-sizing-border-1, 1px) solid var(--slds-g-color-border-1, #c9c9c9);
+}
+
+.c-recent__item:last-child {
+    border-block-end: none;
+}
+
+.c-recent__link {
+    color: var(--slds-g-color-accent-1, #066afe);
+}

@@ -1,0 +1,143 @@
+<template>
+    <div class="slds-p-horizontal_medium">
+        <ui-page-header
+            variant="object-home"
+            icon-name="standard:opportunity"
+            object-label="Opportunities"
+            title="Todas as Oportunidades"
+            meta-text={metaText}
+            onsearch={handleSearch}>
+            <lightning-button-icon
+                slot="switcher"
+                icon-name="utility:down"
+                variant="bare"
+                size="small"
+                alternative-text="Trocar visão de lista"
+                title="Trocar visão de lista">
+            </lightning-button-icon>
+            <div slot="actions">
+                <div class="slds-page-header__controls">
+                    <div class="slds-page-header__control">
+                        <lightning-button-group>
+                            <lightning-button label="Novo" variant="brand"></lightning-button>
+                            <lightning-button label="Importar" variant="neutral"></lightning-button>
+                            <lightning-button label="Alterar proprietário" variant="neutral"></lightning-button>
+                        </lightning-button-group>
+                    </div>
+                    <div class="slds-page-header__control">
+                        <lightning-button-menu
+                            alternative-text="Mais ações"
+                            variant="border-filled"
+                            icon-size="medium"
+                            menu-alignment="right">
+                            <lightning-menu-item label="Visão para impressão" value="printable"></lightning-menu-item>
+                            <lightning-menu-item label="Atualizar previsão" value="forecast"></lightning-menu-item>
+                        </lightning-button-menu>
+                    </div>
+                    <div class="slds-page-header__control">
+                        <lightning-button-group>
+                            <lightning-button
+                                label="Tabela"
+                                icon-name="utility:table"
+                                variant={tableButtonVariant}
+                                data-view="table"
+                                onclick={handleViewChange}>
+                            </lightning-button>
+                            <lightning-button
+                                label="Kanban"
+                                icon-name="utility:kanban"
+                                variant={kanbanButtonVariant}
+                                data-view="kanban"
+                                onclick={handleViewChange}>
+                            </lightning-button>
+                        </lightning-button-group>
+                    </div>
+                </div>
+            </div>
+        </ui-page-header>
+
+        <template if:true={isTable}>
+            <lightning-datatable
+                key-field="id"
+                data={filteredData}
+                columns={columns}
+                sorted-by={sortedBy}
+                sorted-direction={sortedDirection}
+                onsort={handleSort}
+                onrowaction={handleRowAction}
+                show-row-number-column>
+            </lightning-datatable>
+        </template>
+
+        <template if:true={isKanban}>
+            <div class="slds-scrollable_x c-board">
+                <ul class="slds-grid c-board__cols">
+                    <template for:each={boardColumns} for:item="col">
+                        <li key={col.name} class="c-board__col">
+                            <div class="c-board__head">
+                                <span class="slds-truncate c-board__head-label" title={col.name}>{col.name}</span>
+                                <span class="c-board__head-count">({col.count})</span>
+                            </div>
+                            <div class="c-board__body">
+                                <template if:false={col.isEmpty}>
+                                    <p class="c-board__sum">{col.totalLabel}</p>
+                                </template>
+                                <ul class="c-board__list">
+                                    <template for:each={col.deals} for:item="deal">
+                                        <li key={deal.id} class="c-board__item">
+                                            <article class="c-card">
+                                                <div class="c-card__top">
+                                                    <lightning-icon
+                                                        class="c-card__grip"
+                                                        icon-name="utility:drag"
+                                                        size="xx-small"
+                                                        alternative-text="Arrastar oportunidade">
+                                                    </lightning-icon>
+                                                    <a
+                                                        href="#"
+                                                        class="slds-truncate c-card__name"
+                                                        title={deal.name}
+                                                        data-id={deal.id}
+                                                        onclick={handleCardOpen}>{deal.name}</a>
+                                                    <lightning-button-menu
+                                                        class="c-card__menu"
+                                                        alternative-text="Mostrar ações"
+                                                        variant="border-filled"
+                                                        icon-size="x-small"
+                                                        menu-alignment="right"
+                                                        data-id={deal.id}
+                                                        onselect={handleCardAction}>
+                                                        <lightning-menu-item label="Abrir" value="view"></lightning-menu-item>
+                                                        <lightning-menu-item label="Editar" value="edit"></lightning-menu-item>
+                                                        <lightning-menu-item label="Alterar proprietário" value="change_owner"></lightning-menu-item>
+                                                    </lightning-button-menu>
+                                                </div>
+                                                <a
+                                                    href="#"
+                                                    class="slds-truncate c-card__account"
+                                                    title={deal.accountName}
+                                                    data-id={deal.id}
+                                                    onclick={handleCardOpen}>{deal.accountName}</a>
+                                                <div class="c-card__foot">
+                                                    <span class="slds-truncate c-card__stage">{deal.stage}</span>
+                                                    <template if:true={deal.staleWarning}>
+                                                        <lightning-icon
+                                                            icon-name="utility:warning"
+                                                            size="xx-small"
+                                                            variant="warning"
+                                                            alternative-text="Sem atividade há mais de 7 dias">
+                                                        </lightning-icon>
+                                                    </template>
+                                                </div>
+                                            </article>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,10 +1,11 @@
 <template>
-    <div class="slds-p-horizontal_medium">
+    <div class="slds-p-horizontal_medium slds-p-bottom_large">
+        <!-- ===== List view header ===== -->
         <ui-page-header
             variant="object-home"
             icon-name="standard:contact"
-            object-label="Contacts"
-            title="All Contacts"
+            object-label="Contatos"
+            title="Meus Contatos"
             meta-text={metaText}
             onsearch={handleSearch}>
             <lightning-button-icon
@@ -12,41 +13,222 @@
                 icon-name="utility:down"
                 variant="bare"
                 size="small"
-                alternative-text="Switch list view"
-                title="Switch list view">
+                alternative-text="Alternar visualização"
+                title="Alternar visualização">
             </lightning-button-icon>
             <div slot="actions">
                 <div class="slds-page-header__controls">
                     <div class="slds-page-header__control">
                         <lightning-button-group>
-                            <lightning-button label="New" variant="neutral"></lightning-button>
-                            <lightning-button label="Import" variant="neutral"></lightning-button>
-                            <lightning-button label="Add to Campaign" variant="neutral"></lightning-button>
-                            <lightning-button label="Send Email" variant="neutral"></lightning-button>
+                            <lightning-button label="Novo" variant="brand"></lightning-button>
+                            <lightning-button label="Importar" variant="neutral"></lightning-button>
+                            <lightning-button label="Enviar E-mail em Massa" variant="neutral"></lightning-button>
                         </lightning-button-group>
                     </div>
                     <div class="slds-page-header__control">
                         <lightning-button-menu
-                            alternative-text="More Actions"
+                            alternative-text="Mais ações"
                             variant="border-filled"
                             icon-size="medium"
                             menu-alignment="right">
-                            <lightning-menu-item label="Printable View" value="printable"></lightning-menu-item>
+                            <lightning-menu-item label="Adicionar à Campanha" value="campaign"></lightning-menu-item>
+                            <lightning-menu-item label="Visão para Impressão" value="print"></lightning-menu-item>
                         </lightning-button-menu>
                     </div>
                 </div>
             </div>
         </ui-page-header>
 
-        <lightning-datatable
-            key-field="id"
-            data={filteredData}
-            columns={columns}
-            sorted-by={sortedBy}
-            sorted-direction={sortedDirection}
-            onsort={handleSort}
-            onrowaction={handleRowAction}
-            show-row-number-column>
-        </lightning-datatable>
+        <!-- ===== List-view card (filter bar + KPI + toolbar + table) ===== -->
+        <article class="c-listview-card slds-m-top_small" aria-label="Visualização de lista de Contatos">
+            <!-- Barra de filtros — Criado em / Responsável (alinhados à direita) -->
+            <div class="c-list-filters">
+                <div class="c-list-filters__field">
+                    <lightning-combobox
+                        label="Criado em"
+                        variant="label-inline"
+                        value={createdFilter}
+                        options={createdOptions}
+                        onchange={handleCreatedChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="c-list-filters__field">
+                    <lightning-combobox
+                        label="Responsável"
+                        variant="label-inline"
+                        value={ownerFilter}
+                        options={ownerOptions}
+                        onchange={handleOwnerChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="c-list-filters__icons">
+                    <lightning-button-icon
+                        icon-name="utility:bookmark"
+                        variant="border-filled"
+                        alternative-text="Filtros salvos"
+                        title="Filtros salvos">
+                    </lightning-button-icon>
+                    <lightning-button-icon
+                        icon-name="utility:filterList"
+                        variant="border-filled"
+                        alternative-text="Filtros"
+                        title="Filtros">
+                    </lightning-button-icon>
+                </div>
+            </div>
+
+            <!-- KPI insight cards -->
+            <ul class="c-stat-cards" aria-label="Visão Geral">
+                <template for:each={statCards} for:item="card">
+                    <li key={card.key} class={card.cardClass}>
+                        <div class="c-stat-card__header">
+                            <span class="c-stat-card__label slds-truncate" title={card.label}>{card.label}</span>
+                            <lightning-icon
+                                icon-name="utility:info"
+                                size="xx-small"
+                                class="c-stat-card__info"
+                                alternative-text={card.infoLabel}>
+                            </lightning-icon>
+                        </div>
+                        <span class="c-stat-card__value">{card.value}</span>
+                    </li>
+                </template>
+            </ul>
+
+            <!-- Table toolbar — meta + bulk actions -->
+            <div class="c-list-toolbar">
+                <p class="c-list-toolbar__meta slds-text-body_small">{tableMeta}</p>
+                <div class="c-list-toolbar__actions">
+                    <lightning-button-group>
+                        <lightning-button label="Adicionar à Campanha" variant="neutral"></lightning-button>
+                        <lightning-button label="Enviar E-mail" variant="neutral"></lightning-button>
+                        <lightning-button label="Atribuir Rótulo" variant="neutral"></lightning-button>
+                    </lightning-button-group>
+                </div>
+            </div>
+
+            <!-- Contacts table -->
+            <div class="c-table-wrap">
+                <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols c-contacts-table" aria-label="Meus Contatos">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="c-col-select" scope="col">
+                            <lightning-input
+                                type="checkbox"
+                                label="Select all contacts"
+                                variant="label-hidden">
+                            </lightning-input>
+                        </th>
+                        <th aria-label="Nome" aria-sort={sortState.name.ariaSort} class={sortState.name.headerClass} scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0" data-field="name" onclick={handleSort}>
+                                <span class="slds-assistive-text">Ordenar por </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Nome">Nome</span>
+                                    <span class="c-sort-icon">
+                                        <lightning-icon lwc:if={sortState.name.active} icon-name={sortState.name.iconName} size="xx-small" alternative-text="Sort direction"></lightning-icon>
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th class="c-col-bookmark" scope="col">
+                            <span class="slds-assistive-text">Favoritar</span>
+                        </th>
+                        <th aria-label="Cargo" aria-sort={sortState.title.ariaSort} class={sortState.title.headerClass} scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0" data-field="title" onclick={handleSort}>
+                                <span class="slds-assistive-text">Ordenar por </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Cargo">Cargo</span>
+                                    <span class="c-sort-icon">
+                                        <lightning-icon lwc:if={sortState.title.active} icon-name={sortState.title.iconName} size="xx-small" alternative-text="Sort direction"></lightning-icon>
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th aria-label="Nome da Conta" aria-sort={sortState.account.ariaSort} class={sortState.account.headerClass} scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0" data-field="accountName" onclick={handleSort}>
+                                <span class="slds-assistive-text">Ordenar por </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Nome da Conta">Nome da Conta</span>
+                                    <span class="c-sort-icon">
+                                        <lightning-icon lwc:if={sortState.account.active} icon-name={sortState.account.iconName} size="xx-small" alternative-text="Sort direction"></lightning-icon>
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th aria-label="Última Atividade" aria-sort={sortState.activity.ariaSort} class={sortState.activity.headerClass} scope="col">
+                            <a class="slds-th__action slds-text-link_reset" href="#" role="button" tabindex="0" data-field="lastActivity" onclick={handleSort}>
+                                <span class="slds-assistive-text">Ordenar por </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="Última Atividade">Última Atividade</span>
+                                    <span class="c-sort-icon">
+                                        <lightning-icon lwc:if={sortState.activity.active} icon-name={sortState.activity.iconName} size="xx-small" alternative-text="Sort direction"></lightning-icon>
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th class="c-col-actions" scope="col">
+                            <span class="slds-assistive-text">Ações</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={rows} for:item="row">
+                        <tr key={row.id} class="slds-hint-parent">
+                            <td class="c-col-select">
+                                <lightning-input
+                                    type="checkbox"
+                                    label={row.checkboxLabel}
+                                    variant="label-hidden">
+                                </lightning-input>
+                            </td>
+                            <td data-label="Nome">
+                                <div class="slds-truncate" title={row.name}>
+                                    <a href="#" data-id={row.id} onclick={handleRowOpen}>{row.name}</a>
+                                </div>
+                            </td>
+                            <td class="c-col-bookmark">
+                                <lightning-button-icon
+                                    icon-name="utility:bookmark_stroke"
+                                    variant="bare"
+                                    size="small"
+                                    alternative-text={row.bookmarkLabel}
+                                    title="Favoritar">
+                                </lightning-button-icon>
+                            </td>
+                            <td data-label="Cargo">
+                                <div class="slds-truncate" title={row.title}>{row.title}</div>
+                            </td>
+                            <td data-label="Nome da Conta">
+                                <div class="slds-truncate" title={row.accountName}>
+                                    <a href="#" onclick={handleNoop}>{row.accountName}</a>
+                                </div>
+                            </td>
+                            <td data-label="Última Atividade">
+                                <div class="slds-truncate" title={row.lastActivity}>{row.lastActivity}</div>
+                            </td>
+                            <td class="c-col-actions">
+                                <div class="c-row-actions">
+                                    <lightning-button-icon
+                                        icon-name="utility:email"
+                                        variant="border-filled"
+                                        size="small"
+                                        alternative-text={row.emailTitle}
+                                        title={row.emailTitle}>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon
+                                        icon-name="utility:call"
+                                        variant="border-filled"
+                                        size="small"
+                                        alternative-text={row.callTitle}
+                                        title={row.callTitle}>
+                                    </lightning-button-icon>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            </div>
+        </article>
     </div>
 </template>
