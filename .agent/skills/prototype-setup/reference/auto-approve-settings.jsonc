@@ -1,0 +1,68 @@
+{
+    // ------------------------------------------------------------------
+    // Copilot Chat / agent: auto-approval policy for this workspace
+    // ------------------------------------------------------------------
+    // Keep the inner loop tight by pre-approving the commands and tool
+    // calls we actually use every day in this starter kit, while leaving
+    // a small denylist for destructive / publishing operations so they
+    // still prompt for explicit confirmation.
+
+    // 2) Terminal allow/deny list. Keys are either literal command
+    //    prefixes or /regex/ patterns (slash-delimited). `true` allows,
+    //    `false` forces a confirmation even if a broader rule would let
+    //    it through.
+    "chat.tools.terminal.autoApprove": {
+        // --- npm / npx scripts used by this project ---
+        "/^npm (run|test|install|ci) /": true,
+        "npm run build": true,
+        "npm run dev": true,
+        "npm run preview": true,
+        "/^npx @salesforce-ux\\/slds-linter/": true,
+
+        // --- agent skill scripts (SLDS hooks/blueprints/utility lookup) ---
+        "/^node \\.agent\\/skills\\//": true,
+
+        // --- read-only / inspection commands ---
+        "ls": true,
+        "cat": true,
+        "head": true,
+        "tail": true,
+        "wc": true,
+        "grep": true,
+        "find": true,
+        "sed": true,
+        "awk": true,
+        "echo": true,
+        "pwd": true,
+        "which": true,
+        "file": true,
+        "stat": true,
+        "/^git (status|diff|log|show|branch|rev-parse|ls-files) /": true,
+        "/^git (status|diff|log|branch)$/": true,
+
+        // --- local dev server / port juggling ---
+        "lsof": true,
+        "/^curl -s/": true,
+        "/^kill -9 /": true,
+
+        // --- explicitly require confirmation for destructive ops ---
+        "rm": false,
+        "/^rm -rf/": false,
+        "git push": false,
+        "git reset --hard": false,
+        "git clean": false,
+        "npm publish": false,
+        "npm run deploy": false
+    },
+
+    // 3) Other agent knobs.
+
+    // Let the agent run more tool calls in a single turn before pausing
+    // to ask. Default is low (~15), which is the main reason long tasks
+    // feel chatty.
+    "chat.agent.maxRequests": 50,
+
+    // Auto-run tasks defined in tasks.json (build / lint / dev) without
+    // an extra confirmation step.
+    "github.copilot.chat.agent.runTasks": true
+}

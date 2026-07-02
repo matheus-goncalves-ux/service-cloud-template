@@ -18,6 +18,19 @@ A **starter template** for prototyping and developing Salesforce experiences loc
 - **Example pages:** Home, Icons, and Contacts (with parameterized detail route `/contacts/:id`). See `src/modules/page/` and `src/modules/ui/` for patterns.
 - **Multi-app shell:** Two app modes (Standard with tabs, Console with object switcher) configured in `src/apps.config.js`
 
+## Quick start (first time)
+
+If this is the **first time** you're opening this starter kit, let the agent walk you through setup — it's faster than reading docs.
+
+1. Click **Use this template** at the top of this repo on GitHub → create your own copy.
+2. Clone your new repo locally and open the folder in **VS Code**.
+3. Install the **GitHub Copilot** and **GitHub Copilot Chat** extensions, then sign in with your Salesforce OSF account.
+4. Open Copilot Chat in **Agent mode** (the chevron next to the input switches modes) and paste:
+
+   > *I just got this starter kit and want to set it up from scratch. Walk me through everything.*
+
+The agent will pick up from there — it configures Copilot auto-approve, switches to a recent Claude model, optionally sets up Figma MCP, runs a smoke test, and optionally applies your brand (logo + color). Full runbook: [`.agent/skills/prototype-setup/SKILL.md`](.agent/skills/prototype-setup/SKILL.md).
+
 ## Quick start
 
 ```bash
